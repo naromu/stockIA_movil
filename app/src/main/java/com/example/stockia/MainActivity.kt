@@ -14,17 +14,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.stockia.ui.theme.StockIATheme
 import com.example.stockia.view.login.LoginView
+import com.example.stockia.view.login.RegisterView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            StockIATheme {
-                LoginView()
+
+        try {
+            setContent {
+                StockIATheme {
+                    RegisterView()
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
+
 }
 
 @Composable

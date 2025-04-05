@@ -32,9 +32,9 @@ val AppTypography = Typography(
     ),
     titleMedium =  TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Medium,
-        fontSize = 42.sp,
-        color = Subtitulos
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp,
+        color = AzulPrincipal
     ),
     labelSmall = TextStyle(
         fontFamily = Poppins,
