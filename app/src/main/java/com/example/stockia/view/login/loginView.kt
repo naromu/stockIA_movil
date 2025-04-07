@@ -1,5 +1,6 @@
 package com.example.stockia.view.login
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,17 +17,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -40,15 +41,18 @@ import com.example.stockia.ui.theme.AzulPrincipal
 import com.example.stockia.ui.theme.Subtitulos
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.stockia.Greeting
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.stockia.common.CustomButtonBlue
+import com.example.stockia.routes.Routes
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 
-import com.example.stockia.viewmodel.LoginViewModel
+import com.example.stockia.viewmodel.login.LoginViewModel
 
 @Composable
 fun LoginView(
+    navController: NavController,
     loginViewModel: LoginViewModel = viewModel()
 ) {
     val email = loginViewModel.email
@@ -56,6 +60,33 @@ fun LoginView(
     val isPasswordVisible = loginViewModel.isPasswordVisible
 
     val focusManager = LocalFocusManager.current
+
+    val context = LocalContext.current
+
+    LaunchedEffect(loginViewModel.loginResult) {
+        when (val result = loginViewModel.loginResult) {
+            "success" -> {
+                Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                loginViewModel.clearLoginResult()
+                navController?.navigate(Routes.HomeView) {
+                    popUpTo(Routes.LoginView) { inclusive = true }
+                }
+            }
+
+            "Cuenta pendiente por confirmar" -> {
+                Toast.makeText(context, result, Toast.LENGTH_LONG).show()
+                loginViewModel.clearLoginResult()
+                navController?.navigate(Routes.ConfirmEmailView)
+            }
+
+            null -> Unit
+
+            else -> {
+                Toast.makeText(context, result, Toast.LENGTH_LONG).show()
+                loginViewModel.clearLoginResult()
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -133,14 +164,18 @@ fun LoginView(
             Spacer(modifier = Modifier.height(24.dp))
 
             CustomButtonBlue(
-                text = "Iniciar sesión",
-                onClick = { loginViewModel.onLoginClick() }
+                text = if (loginViewModel.isLoading) "Iniciando..." else "Iniciar sesión",
+                onClick = { loginViewModel.onLoginClick() },
+                enabled = !loginViewModel.isLoading
             )
+
+
 
             Spacer(modifier = Modifier.height(14.dp))
 
+
             OutlinedButton(
-                onClick = { /* Acción de registrarse */ },
+                onClick = { navController?.navigate(Routes.RegisterView)  },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
@@ -154,8 +189,8 @@ fun LoginView(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            TextButton(onClick = { /* Acción de restablecer contraseña */ }) {
-                Text("Restablecer contraseña", color = AzulPrincipal, fontSize = 16.sp)
+            TextButton(onClick = {navController?.navigate(Routes.ResetPasswordOneView)  }) {
+                Text("Restablecer contraseña", color = AzulPrincipal, fontSize = 16.sp,)
             }
         }
     }
@@ -166,6 +201,8 @@ fun LoginView(
 @Composable
 fun LoginPreview() {
     StockIATheme {
-        LoginView()
+        LoginView(
+            navController = rememberNavController()
+        )
     }
 }

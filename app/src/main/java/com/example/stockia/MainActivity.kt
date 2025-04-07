@@ -11,9 +11,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import com.example.stockia.routes.AppNavHost
 import com.example.stockia.ui.theme.StockIATheme
+import com.example.stockia.view.login.LoginPreview
 import com.example.stockia.view.login.LoginView
+import com.example.stockia.view.login.RegisterPreview
 import com.example.stockia.view.login.RegisterView
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +29,7 @@ class MainActivity : ComponentActivity() {
         try {
             setContent {
                 StockIATheme {
-                    RegisterView()
+                    AppNavHost(context = this)
                 }
             }
         } catch (e: Exception) {

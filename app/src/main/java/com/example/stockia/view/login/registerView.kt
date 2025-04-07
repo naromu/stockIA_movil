@@ -1,8 +1,7 @@
 package com.example.stockia.view.login
 
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,55 +13,65 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.stockia.R
 import com.example.stockia.common.CustomPasswordField
 import com.example.stockia.common.CustomTextField
-import com.example.stockia.ui.theme.AzulPrincipal
 import com.example.stockia.ui.theme.Subtitulos
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.stockia.Greeting
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.common.CustomPhoneTextField
 import com.example.stockia.common.HeaderWithBackArrow
+import com.example.stockia.routes.Routes
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 
-import com.example.stockia.viewmodel.LoginViewModel
-import com.example.stockia.viewmodel.RegisterViewModel
+import com.example.stockia.viewmodel.login.RegisterViewModel
+import androidx.compose.ui.platform.LocalContext
+import com.example.stockia.common.CommonError
+
 
 @Composable
 fun RegisterView(
+    navController: NavController ? = null,
     registerViewModel: RegisterViewModel = viewModel()
 ) {
+    val context = LocalContext.current
 
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(registerViewModel.registrationResult) {
+        when (registerViewModel.registrationResult) {
+            "success" -> {
+                navController?.navigate(Routes.ConfirmEmailView)
+                registerViewModel.clearRegistrationResult()
+            }
+
+            null -> Unit
+
+            else -> {
+                Toast.makeText(context, registerViewModel.registrationResult, Toast.LENGTH_LONG)
+                    .show()
+                registerViewModel.clearRegistrationResult()
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -78,7 +87,8 @@ fun RegisterView(
             .padding(24.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 ,
             verticalArrangement = Arrangement.Top,
@@ -86,7 +96,10 @@ fun RegisterView(
         ) {
 
 
-            HeaderWithBackArrow(text = "Crear cuenta")
+            HeaderWithBackArrow(
+                text = "Crear cuenta",
+                onClick = { navController?.popBackStack() }
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -139,6 +152,9 @@ fun RegisterView(
                 onValueChange = { registerViewModel.onEmailChange(it) },
                 label = "Correo"
             )
+            registerViewModel.emailError?.let {
+                CommonError(text = it)
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -154,6 +170,7 @@ fun RegisterView(
                 value = registerViewModel.phoneNumber,
                 onValueChange = { registerViewModel.onPhoneNumberChange(it) }
             )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -172,6 +189,9 @@ fun RegisterView(
                 isPasswordVisible = registerViewModel.isPasswordVisible,
                 onVisibilityToggle = { registerViewModel.togglePasswordVisibility() }
             )
+            registerViewModel.passwordErrors.forEach {
+                CommonError(text = it)
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -186,17 +206,21 @@ fun RegisterView(
 
             CustomPasswordField(
                 value = registerViewModel.confirmPassword,
-                onValueChange = { registerViewModel.onPasswordChange(it) },
+                onValueChange = { registerViewModel.onConfirmPasswordChange(it) },
                 label = "Contraseña",
-                isPasswordVisible = registerViewModel.isPasswordVisible,
-                onVisibilityToggle = { registerViewModel.togglePasswordVisibility() }
+                isPasswordVisible = registerViewModel.isConfirmPasswordVisible,
+                onVisibilityToggle = { registerViewModel.toggleConfirmPasswordVisibility() }
             )
+            registerViewModel.confirmPasswordError?.let {
+                CommonError(text = it)
+            }
 
 
             Spacer(modifier = Modifier.height(24.dp))
 
             CustomButtonBlue(
-                text = "Continuar",
+                text = if (registerViewModel.isLoading) "Registrando..." else "Registrarse",
+                enabled = registerViewModel.isFormValid && !registerViewModel.isLoading,
                 onClick = { registerViewModel.onRegisterClick() }
             )
 
@@ -211,6 +235,9 @@ fun RegisterView(
 @Composable
 fun RegisterPreview() {
     StockIATheme {
-        RegisterView()
+        RegisterView(
+            navController = rememberNavController()
+
+        )
     }
 }

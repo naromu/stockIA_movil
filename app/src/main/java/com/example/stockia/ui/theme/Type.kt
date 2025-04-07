@@ -20,8 +20,8 @@ val AppTypography = Typography(
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.5 .sp,
         color = LetraPrincipal
     ),
     titleLarge = TextStyle(
@@ -33,7 +33,7 @@ val AppTypography = Typography(
     titleMedium =  TextStyle(
         fontFamily = Poppins,
         fontWeight = FontWeight.Bold,
-        fontSize = 32.sp,
+        fontSize = 30.sp,
         color = AzulPrincipal
     ),
     labelSmall = TextStyle(

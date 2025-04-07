@@ -2,6 +2,7 @@ package com.example.stockia.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.example.stockia.R
 import com.example.stockia.ui.theme.AzulPrincipal
 import com.example.stockia.ui.theme.BlancoBase
@@ -51,11 +53,20 @@ import com.example.stockia.view.login.LoginView
 fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String
+    label: String,
+    allowedPattern: Regex = Regex("[^\\w\\sáéíóúñÁÉÍÓÚÑ@.,-]"),
+    maxLength: Int = 100
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { newValue ->
+            if (newValue.length <= maxLength) { val filteredValue = newValue.replace(allowedPattern, "")
+            if (newValue == filteredValue) {
+                onValueChange(newValue)
+            } else {
+                onValueChange(filteredValue)
+            }
+        }},
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         singleLine = true,
@@ -65,6 +76,19 @@ fun CustomTextField(
             cursorColor = AzulPrincipal,
             containerColor = Color.White
         )
+    )
+}
+
+@Composable
+fun CommonError(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        color = Color.Red,
+        style = MaterialTheme.typography.labelSmall,
+        modifier = modifier.fillMaxWidth().padding(8.dp)
     )
 }
 
@@ -105,24 +129,29 @@ fun CustomPasswordField(
 @Composable
 fun HeaderWithBackArrow(
     text: String,
+    onClick: (() -> Unit)? = null, // ahora es opcional
     modifier: Modifier = Modifier
+) {
+    val navController = rememberNavController()
 
-){
-    Row (
+    Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .systemBarsPadding()
-            .padding(8.dp),
-
-        )
-    {
+            .padding(8.dp)
+    ) {
         Image(
             painter = painterResource(id = R.drawable.back_arrow),
-            contentDescription = "Logo",
-            modifier = Modifier.size(30.dp)
+            contentDescription = "Back arrow",
+            modifier = Modifier
+                .size(30.dp)
+                .clickable {
+                    onClick?.invoke() ?: navController.popBackStack()
+                }
         )
 
-        Spacer(modifier = Modifier.width(32.dp))
+        Spacer(modifier = Modifier.width(20.dp))
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,
@@ -130,6 +159,7 @@ fun HeaderWithBackArrow(
         )
     }
 }
+
 
 @Preview
 @Composable
@@ -143,16 +173,18 @@ fun HeaderWithBackArrowPreview(){
 fun CustomButtonBlue(
     text: String,
     onClick: () -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = AzulPrincipal,  // Fondo azul
+            containerColor = if (enabled) AzulPrincipal else Color.Gray
         )
     ) {
         Text(
@@ -170,6 +202,7 @@ fun CustomButtonBluePreview() {
     StockIATheme {
         CustomButtonBlue(
             text = "Iniciar sesión",
+            enabled = false,
             onClick = { }
         )
     }
