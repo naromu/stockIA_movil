@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.RegisterRequest
 import com.example.stockia.model.RegisterResponse
-import com.example.stockia.model.RetrofitClient
 import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {

@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import com.example.stockia.routes.Routes
 
 class ResetPasswordTwoViewModel: ViewModel()  {
 
@@ -19,10 +21,9 @@ class ResetPasswordTwoViewModel: ViewModel()  {
         code = newValue
     }
 
-    fun onContinuosClick() {
+    fun onContinuosClick(navController: NavController) {
 
-        isFormValid
-
+        navController.navigate("${Routes.ResetPasswordThreeView}?code=${code}")
     }
 
 }

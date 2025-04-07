@@ -108,7 +108,7 @@ fun ConfirmEmailView(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             Text(
                 text = "Código",
@@ -129,7 +129,7 @@ fun ConfirmEmailView(
 
             CustomButtonBlue(
                 text = if (confirmEmailViewModel.isLoading) "Confirmando..." else "Confirmar",
-                enabled = confirmEmailViewModel.isFormValid&& !confirmEmailViewModel.isLoading,
+                enabled = confirmEmailViewModel.isFormValid && !confirmEmailViewModel.isLoading,
 
                 onClick = { confirmEmailViewModel.onRegisterClick() }
             )

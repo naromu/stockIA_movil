@@ -11,7 +11,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.LoginRequest
 import com.example.stockia.model.LoginResponse
-import com.example.stockia.model.RetrofitClient
 import com.example.stockia.utils.SharedPreferencesHelper
 import com.google.gson.Gson
 import kotlinx.coroutines.launch

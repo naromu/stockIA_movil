@@ -1,16 +1,26 @@
-package com.example.stockia.model
-
+import android.content.Context
+import com.example.stockia.model.ApiService
+import com.example.stockia.network.AuthInterceptor
+import com.example.stockia.utils.SharedPreferencesHelper
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://173.212.224.226:3000/"
+    fun create(context: Context): ApiService {
+        val prefs = SharedPreferencesHelper(context)
+        val client = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(prefs))
+            .build()
 
-    val api: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://173.212.224.226:3000/")
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+
+        return retrofit.create(ApiService::class.java)
     }
+
+    lateinit var api: ApiService
 }

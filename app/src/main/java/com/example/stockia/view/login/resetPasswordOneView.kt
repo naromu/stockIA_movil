@@ -33,6 +33,7 @@ import com.example.stockia.ui.theme.Subtitulos
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.stockia.common.CommonError
 import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.routes.Routes
@@ -62,6 +63,7 @@ fun ResetPasswordOneView(
             null -> Unit
 
             else -> {
+
                 Toast.makeText(context, resetPasswordViewModel.resultMessage, Toast.LENGTH_LONG).show()
                 resetPasswordViewModel.clearResultMessage()
             }
@@ -105,7 +107,7 @@ fun ResetPasswordOneView(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             Text(
                 text = "Correo",
@@ -121,6 +123,9 @@ fun ResetPasswordOneView(
                 onValueChange = { resetPasswordViewModel.onEmailChange(it) },
                 label = "Correo"
             )
+            resetPasswordViewModel.emailError?.let {
+                CommonError(text = it)
+            }
             Spacer(modifier = Modifier.height(24.dp))
 
 

@@ -33,21 +33,48 @@ import com.example.stockia.ui.theme.Subtitulos
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.stockia.common.CommonError
 import com.example.stockia.common.CustomButtonBlue
+import com.example.stockia.common.CustomPasswordField
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.routes.Routes
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 import com.example.stockia.viewmodel.login.ConfirmEmailViewModel
+import com.example.stockia.viewmodel.login.ResetPasswordThreeViewModel
 import com.example.stockia.viewmodel.login.ResetPasswordTwoViewModel
 
 @Composable
-fun ResetPasswordTwoView(
+fun ResetPasswordThreeView(
     navController: NavController,
-    resetPasswordTwoViewModel: ResetPasswordTwoViewModel = viewModel()
+    code: String,
+    resetPasswordThreeViewModel: ResetPasswordThreeViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(Unit) {
+        resetPasswordThreeViewModel.code = code
+    }
+
+    LaunchedEffect(resetPasswordThreeViewModel.resultMessage) {
+        when (resetPasswordThreeViewModel.resultMessage) {
+            "success" -> {
+                Toast.makeText(context, "Contraseña cambiada exitosamente", Toast.LENGTH_LONG).show()
+                resetPasswordThreeViewModel.clearResultMessage()
+                navController.navigate(Routes.LoginView) {
+                    popUpTo(Routes.ConfirmEmailView) { inclusive = true }
+                }
+            }
+
+            null -> Unit
+
+            else -> {
+                Toast.makeText(context, resetPasswordThreeViewModel.resultMessage, Toast.LENGTH_LONG).show()
+                resetPasswordThreeViewModel.clearResultMessage()
+            }
+        }
+    }
 
 
     Box(
@@ -80,17 +107,16 @@ fun ResetPasswordTwoView(
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = "Hemos enviado un código de verificación a tu email",
+                text = "Crea tu nueva contraseña",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
-            
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = "Código",
+                text = "Contraseña",
                 style = MaterialTheme.typography.labelSmall,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
@@ -98,18 +124,46 @@ fun ResetPasswordTwoView(
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            CustomTextField(
-                value = resetPasswordTwoViewModel.code,
-                onValueChange = { resetPasswordTwoViewModel.onCodeChange(it) },
-                label = "Correo"
+            CustomPasswordField(
+                value = resetPasswordThreeViewModel.password,
+                onValueChange = { resetPasswordThreeViewModel.onPasswordChange(it) },
+                label = "Contraseña",
+                isPasswordVisible = resetPasswordThreeViewModel.isPasswordVisible,
+                onVisibilityToggle = { resetPasswordThreeViewModel.togglePasswordVisibility() }
             )
+            resetPasswordThreeViewModel.passwordErrors.forEach {
+                CommonError(text = it)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Confirmar contraseña",
+                style = MaterialTheme.typography.labelSmall,
+                color = Subtitulos,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            CustomPasswordField(
+                value = resetPasswordThreeViewModel.confirmPassword,
+                onValueChange = { resetPasswordThreeViewModel.onConfirmPasswordChange(it) },
+                label = "Contraseña",
+                isPasswordVisible = resetPasswordThreeViewModel.isConfirmPasswordVisible,
+                onVisibilityToggle = { resetPasswordThreeViewModel.toggleConfirmPasswordVisibility() }
+            )
+            resetPasswordThreeViewModel.confirmPasswordError?.let {
+                CommonError(text = it)
+            }
+
+
             Spacer(modifier = Modifier.height(24.dp))
 
-
             CustomButtonBlue(
-                text =  "Continuar",
-                enabled = resetPasswordTwoViewModel.isFormValid ,
-                onClick = { resetPasswordTwoViewModel.onContinuosClick(navController) }
+                text = if (resetPasswordThreeViewModel.isLoading) "Restableciendo..." else "Restablecer",
+                enabled = resetPasswordThreeViewModel.isFormValid && !resetPasswordThreeViewModel.isLoading,
+                onClick = { resetPasswordThreeViewModel.onRestablecerClick() }
             )
             Spacer(modifier = Modifier.height(14.dp))
 
@@ -120,10 +174,11 @@ fun ResetPasswordTwoView(
 
 @Preview(showBackground = true, apiLevel = 33)
 @Composable
-fun ResetPasswordTwoPreview() {
+fun ResetPasswordThreePreview() {
     StockIATheme {
-        ResetPasswordTwoView(
-            navController = rememberNavController()
+        ResetPasswordThreeView(
+            navController = rememberNavController(),
+            code = "HJHJ3",
 
         )
     }

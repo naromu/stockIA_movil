@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.ConfirmEmailRequest
 import com.example.stockia.model.ConfirmEmailResponse
-import com.example.stockia.model.RetrofitClient
 import kotlinx.coroutines.launch
 
 class ConfirmEmailViewModel : ViewModel() {

@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
         try {
             setContent {
                 StockIATheme {
+                    RetrofitClient.api = RetrofitClient.create(applicationContext)
                     AppNavHost(context = this)
                 }
             }

@@ -152,6 +152,7 @@ fun RegisterView(
                 onValueChange = { registerViewModel.onEmailChange(it) },
                 label = "Correo"
             )
+
             registerViewModel.emailError?.let {
                 CommonError(text = it)
             }

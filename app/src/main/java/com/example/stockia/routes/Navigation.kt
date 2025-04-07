@@ -20,7 +20,9 @@ import com.example.stockia.view.login.LoginView
 import com.example.stockia.view.login.RegisterView
 import com.example.stockia.view.login.ResetPasswordOnePreview
 import com.example.stockia.view.login.ResetPasswordOneView
+import com.example.stockia.view.login.ResetPasswordThreeView
 import com.example.stockia.view.login.ResetPasswordTwoView
+import okhttp3.Route
 
 
 @Composable
@@ -53,7 +55,7 @@ fun AppNavHost(context: Context) {
         }
 
         composable(Routes.HomeView){
-            HomeView()
+            HomeView(navController)
             BackHandler { }
         }
 
@@ -66,6 +68,19 @@ fun AppNavHost(context: Context) {
             ResetPasswordTwoView(navController)
             BackHandler { }
         }
+
+        composable(
+            route = "${Routes.ResetPasswordThreeView}?code={code}",
+            arguments = listOf(
+                    navArgument("code") { type = NavType.StringType; defaultValue = "" })
+            ){
+            backStackEntry ->
+            val code = backStackEntry.arguments?.getString("code") ?: ""
+
+            ResetPasswordThreeView(navController, code = code)
+            BackHandler { }
+        }
+
 
     }
 }

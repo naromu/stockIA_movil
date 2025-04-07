@@ -46,3 +46,25 @@ data class LoginResponse(
 data class LoginData(
     val token: String
 )
+
+data class ResetPasswordOneRequest(
+    val email: String
+)
+
+data class ResetPasswordOneResponse(
+    val status: String,
+    val message: String,
+    val data: LoginData?
+)
+
+data class ResetPasswordThreeRequest(
+    val token: String,
+    val newPassword: String,
+    val confirmNewPassword: String,
+)
+
+data class ResetPasswordThreeResponse(
+    val status: String,
+    val message: String,
+    val data: LoginData?
+)
