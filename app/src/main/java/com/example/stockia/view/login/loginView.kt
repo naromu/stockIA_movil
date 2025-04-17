@@ -45,6 +45,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.routes.Routes
+import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 
@@ -116,12 +117,12 @@ fun LoginView(
 
             Text(
                 text = "Bienvenido a",
-                style = MaterialTheme.typography.bodyLarge
+                style = AppTypography.bodyLarge
             )
 
             Text(
                 text = "stockIA",
-                style = MaterialTheme.typography.titleLarge,
+                style = AppTypography.titleLarge,
                 color = AzulPrincipal
             )
 
@@ -129,7 +130,7 @@ fun LoginView(
 
             Text(
                 text = "Correo",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -146,7 +147,7 @@ fun LoginView(
 
             Text(
                 text = "Contraseña",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start

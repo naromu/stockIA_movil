@@ -37,6 +37,7 @@ import com.example.stockia.common.CommonError
 import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.routes.Routes
+import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 import com.example.stockia.viewmodel.login.ConfirmEmailViewModel
@@ -102,7 +103,7 @@ fun ResetPasswordOneView(
 
             Text(
                 text = "Ingresa tu correo",
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
@@ -111,7 +112,7 @@ fun ResetPasswordOneView(
 
             Text(
                 text = "Correo",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start

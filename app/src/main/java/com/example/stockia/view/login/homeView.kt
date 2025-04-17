@@ -2,56 +2,58 @@ package com.example.stockia.view.login
 
 import HomeViewModel
 import android.widget.Toast
-import androidx.compose.foundation.Image
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.stockia.R
-import com.example.stockia.common.CustomButtonBlue
+import com.example.stockia.common.HeaderWithHamburger
+import com.example.stockia.common.IconTextButton
+import com.example.stockia.common.SideMenu
 import com.example.stockia.routes.Routes
+import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
-
 
 @Composable
 fun HomeView(
     navController: NavController,
     homeViewModel: HomeViewModel = viewModel()
-
-
 ) {
     val context = LocalContext.current
+
+    var menuOpen by remember { mutableStateOf(false) }
+
+    var headerHeightPx by remember { mutableStateOf(0) }
+    val density = LocalDensity.current
+    val headerHeightDp = with(density) { headerHeightPx.toDp() }
 
     LaunchedEffect(homeViewModel.resultMessage) {
         when (homeViewModel.resultMessage) {
             "success" -> {
-                Toast.makeText(context, "Sesión cerrada exitosamente", Toast.LENGTH_SHORT).show()
-                homeViewModel.clearMessage()
-                // Navega al login
-                navController?.navigate(Routes.LoginView) {
+                Toast.makeText(context, "Sesión cerrada", Toast.LENGTH_SHORT).show()
+                navController.navigate(Routes.LoginView) {
                     popUpTo(Routes.HomeView) { inclusive = true }
                 }
+                homeViewModel.clearMessage()
             }
-
             null -> Unit
-
             else -> {
-                Toast.makeText(context, homeViewModel.resultMessage!!, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, homeViewModel.resultMessage, Toast.LENGTH_SHORT).show()
                 homeViewModel.clearMessage()
             }
         }
@@ -60,39 +62,98 @@ fun HomeView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .systemBarsPadding()
+            .background(BlancoBase)
             .padding(24.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopCenter
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo), // Asegúrate de tener `logo.png` en res/drawable
-                contentDescription = "Logo",
+        if (!menuOpen) {
+            Column(
                 modifier = Modifier
-                    .size(150.dp)
-            )
+                    .align(Alignment.TopCenter)
+                    .padding(top = headerHeightDp + 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconTextButton(
+                    text = "Categorías",
+                    iconRes = R.drawable.categorias,
+                    onClick = {
+                        Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
 
-            Spacer(modifier = Modifier.height(24.dp))
+                    }
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                IconTextButton(
+                    text = "Productos",
+                    iconRes = R.drawable.productos,
+                    onClick = {
+                        Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
 
-            Text(
-                text = "¡Bienvenido a StockIA!",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
-                ),
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(28.dp))
+                    }
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                IconTextButton(
+                    text = "Stock",
+                    iconRes = R.drawable.stock,
+                    onClick = {
+                        Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
 
+                    }
+                )
+            }
+        }
 
-            CustomButtonBlue(
-                text = if (homeViewModel.isLoading) "Cerrando Sesion..." else "Cerrar sesión",
-                onClick = { homeViewModel.onLogoutClick() },
-                enabled = !homeViewModel.isLoading
+        if (menuOpen) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = headerHeightDp)
+                    .clickable { menuOpen = false }
             )
         }
+
+        AnimatedVisibility(
+            visible = menuOpen,
+            enter = slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(durationMillis = 300)
+            ),
+            exit = slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(durationMillis = 300)
+            ),
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = headerHeightDp)
+        ) {
+            SideMenu(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                currentRoute = navController.currentBackStackEntry?.destination?.route ?: "",
+                nameUser = "La Isis",
+                onRouteClick = { route ->
+                    menuOpen = false
+                    navController.navigate(route)
+                },
+                onLogoutClick = {
+                    menuOpen = false
+                    homeViewModel.onLogoutClick()
+                }
+            )
+        }
+
+        HeaderWithHamburger(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .onGloballyPositioned { coords ->
+                    headerHeightPx = coords.size.height
+                },
+            text = "Inventario",
+            isMenuOpen = menuOpen,
+            onClick = { menuOpen = !menuOpen }
+        )
     }
 }
 
@@ -100,6 +161,6 @@ fun HomeView(
 @Composable
 fun HomePreview() {
     StockIATheme {
-        HomeView(navController= rememberNavController())
+        HomeView(navController = rememberNavController())
     }
 }

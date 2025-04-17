@@ -45,6 +45,7 @@ import com.example.stockia.ui.theme.StockIATheme
 import com.example.stockia.viewmodel.login.RegisterViewModel
 import androidx.compose.ui.platform.LocalContext
 import com.example.stockia.common.CommonError
+import com.example.stockia.ui.theme.AppTypography
 
 
 @Composable
@@ -106,7 +107,7 @@ fun RegisterView(
 
             Text(
                 text = "Nombre propietario",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -123,7 +124,7 @@ fun RegisterView(
 
             Text(
                 text = "Nombre empresa",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -140,7 +141,7 @@ fun RegisterView(
 
             Text(
                 text = "Correo Electronico",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -161,7 +162,7 @@ fun RegisterView(
 
             Text(
                 text = "Número de Celular",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -176,7 +177,7 @@ fun RegisterView(
 
             Text(
                 text = "Contraseña",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -198,7 +199,7 @@ fun RegisterView(
 
             Text(
                 text = "Confirmar contraseña",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start

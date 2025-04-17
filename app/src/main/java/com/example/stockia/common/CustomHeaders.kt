@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 import HomeViewModel
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,11 +23,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,12 +37,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.stockia.R
+import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 
@@ -72,7 +77,7 @@ fun HeaderWithBackArrow(
         Spacer(modifier = Modifier.width(20.dp))
         Text(
             text = text,
-            style = MaterialTheme.typography.titleMedium,
+            style = AppTypography.titleMedium,
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -90,7 +95,8 @@ fun HeaderWithBackArrowPreview(){
 fun HeaderWithHamburger(
     modifier: Modifier = Modifier,
     text: String,
-    onClick: (() -> Unit)? = null // ahora es opcional
+    isMenuOpen: Boolean,
+    onClick: () -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -101,20 +107,21 @@ fun HeaderWithHamburger(
             .systemBarsPadding()
             .padding(8.dp)
     ) {
+
+        val iconRes = if (isMenuOpen) R.drawable.openhamburger else R.drawable.hamburger
         Image(
-            painter = painterResource(id = R.drawable.hamburger),
-            contentDescription = "Back arrow",
+            painter = painterResource(iconRes),
+            contentDescription = null,
             modifier = Modifier
                 .size(30.dp)
-                .clickable {
-                    onClick?.invoke() ?: navController.popBackStack()
-                }
+                .clickable(onClick = onClick)
         )
+
 
         Spacer(modifier = Modifier.width(20.dp))
         Text(
             text = text,
-            style = MaterialTheme.typography.titleMedium,
+            style = AppTypography.titleMedium,
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -124,7 +131,10 @@ fun HeaderWithHamburger(
 @Composable
 fun HeaderWithHamburgerPreview(){
     StockIATheme {
-        HeaderWithHamburger(text = "Inventario")
+        HeaderWithHamburger(text = "Inventario",
+            isMenuOpen = true,
+            onClick = { false})
+
     }
 }
 
@@ -133,13 +143,18 @@ fun SideMenu(
     modifier: Modifier = Modifier,
     currentRoute: String,
     nameUser: String = "",
-    onItemClick: (route: String) -> Unit,
+    onRouteClick: (route: String) -> Unit,
     onLogoutClick: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    var invExpanded   by remember { mutableStateOf(false) }
+    var ventasExpanded by remember { mutableStateOf(false) }
+    var pedidosExpanded by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(BlancoBase)
             .padding(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -149,7 +164,7 @@ fun SideMenu(
                 modifier = Modifier.size(32.dp)
             )
             Spacer(Modifier.width(8.dp))
-            Text(text = nameUser, style = MaterialTheme.typography.titleSmall)
+            Text(text = nameUser, style = AppTypography.titleSmall)
         }
 
         Spacer(Modifier.height(10.dp))
@@ -158,45 +173,59 @@ fun SideMenu(
         MenuSection(
             title        = "Inventario",
             icon         = Icons.Default.Star,
-            expanded     = currentRoute in listOf("inventario","productos","categorias","stock"),
-            onHeaderClick= { onItemClick("inventario") }
+            expanded     = invExpanded,
+            onHeaderClick= { invExpanded = !invExpanded }
         ) {
+            // 3. Estos sí navegan
             MenuItem("Productos", icon = Icons.Default.Star, selected = currentRoute == "productos") {
-                onItemClick("productos")
+                //onRouteClick("productos")
+                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
             }
             MenuItem("Categorías", icon = Icons.Default.Star, selected = currentRoute == "categorias") {
-                onItemClick("categorias")
+                //onRouteClick("categorias")
+                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
             }
             MenuItem("Stock", icon = Icons.Default.Star, selected = currentRoute == "stock") {
-                onItemClick("stock")
+               // onRouteClick("stock")
+                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
             }
         }
 
         MenuSection(
             title        = "Ventas",
             icon         = Icons.Default.Star,
-            expanded     = currentRoute in listOf("ventas","ordenes_de_venta","devoluciones_de_venta"),
-            onHeaderClick= { onItemClick("ventas") }
+            expanded     = ventasExpanded,
+            onHeaderClick= { ventasExpanded = !ventasExpanded }
         ) {
             MenuItem("Órdenes de venta", icon = Icons.Default.Star, selected = currentRoute == "ordenes_de_venta") {
-                onItemClick("ordenes_de_venta")
+                //onRouteClick("ordenes_de_venta")
+                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
             }
-            MenuItem("Devoluciones",    icon = Icons.Default.Star, selected = currentRoute == "devoluciones_de_venta") {
-                onItemClick("devoluciones_de_venta")
+            MenuItem("Devoluciones", icon = Icons.Default.Star, selected = currentRoute == "devoluciones_de_venta") {
+               // onRouteClick("devoluciones_de_venta")
+                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
             }
         }
 
         MenuSection(
             title        = "Pedidos",
             icon         = Icons.Default.Star,
-            expanded     = currentRoute in listOf("pedidos","ordenes_de_compra","devoluciones_de_compra"),
-            onHeaderClick= { onItemClick("pedidos") }
+            expanded     = pedidosExpanded,
+            onHeaderClick= { pedidosExpanded = !pedidosExpanded }
         ) {
-            MenuItem("Órdenes de compra",  icon = Icons.Default.Star, selected = currentRoute == "ordenes_de_compra") {
-                onItemClick("ordenes_de_compra")
+            MenuItem("Órdenes de compra", icon = Icons.Default.Star, selected = currentRoute == "ordenes_de_compra") {
+               // onRouteClick("ordenes_de_compra")
+                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
             }
             MenuItem("Devoluciones compra", icon = Icons.Default.Star, selected = currentRoute == "devoluciones_de_compra") {
-                onItemClick("devoluciones_de_compra")
+                //onRouteClick("devoluciones_de_compra")
+                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
             }
         }
 
@@ -207,21 +236,27 @@ fun SideMenu(
             icon     = Icons.Default.Star,
             selected = currentRoute == "clientes"
         ) {
-            onItemClick("clientes")
+            //onRouteClick("clientes")
+            Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
         }
         MenuHeaderItem(
             title    = "Proveedores",
             icon     = Icons.Default.Star,
             selected = currentRoute == "proveedores"
         ) {
-            onItemClick("proveedores")
+            //onRouteClick("proveedores")
+            Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
         }
         MenuHeaderItem(
             title    = "Estadísticas",
             icon     = Icons.Default.Star,
             selected = currentRoute == "estadisticas"
         ) {
-            onItemClick("estadisticas")
+            //onRouteClick("estadisticas")
+            Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+
         }
 
 
@@ -265,7 +300,7 @@ fun MenuHeaderItem(
         Spacer(Modifier.width(12.dp))
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyLarge,
+            style = AppTypography.bodyLarge,
             color = if (selected)
                 MaterialTheme.colorScheme.primary
             else
@@ -292,7 +327,7 @@ fun MenuSection(
         ) {
             Icon(icon, contentDescription = null, Modifier.size(20.dp))
             Spacer(Modifier.width(12.dp))
-            Text(title, style = MaterialTheme.typography.bodyLarge)
+            Text(title, style = AppTypography.bodyLarge)
             Spacer(Modifier.weight(1f))
             Icon(
                 imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
@@ -334,7 +369,7 @@ fun MenuItem(
         Spacer(Modifier.width(12.dp))
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyMedium,
+            style = AppTypography.bodyLarge,
             color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
@@ -353,8 +388,7 @@ fun SideMenuInteractivePreview() {
         SideMenu(
             currentRoute   = currentRoute,
             nameUser       = "Natalia",
-            onItemClick    = { route ->
-                // toggle expand/collapse
+            onRouteClick   = { route ->
                 currentRoute = if (currentRoute == route) "" else route
             },
             onLogoutClick  = { /* nada */ }

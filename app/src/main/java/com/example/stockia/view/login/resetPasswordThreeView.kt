@@ -38,6 +38,7 @@ import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.common.CustomPasswordField
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.routes.Routes
+import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 import com.example.stockia.viewmodel.login.ConfirmEmailViewModel
@@ -108,7 +109,7 @@ fun ResetPasswordThreeView(
 
             Text(
                 text = "Crea tu nueva contraseña",
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
@@ -117,7 +118,7 @@ fun ResetPasswordThreeView(
 
             Text(
                 text = "Contraseña",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -139,7 +140,7 @@ fun ResetPasswordThreeView(
 
             Text(
                 text = "Confirmar contraseña",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start

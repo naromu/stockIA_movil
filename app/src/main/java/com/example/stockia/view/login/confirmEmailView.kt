@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.routes.Routes
+import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 import com.example.stockia.viewmodel.login.ConfirmEmailViewModel
@@ -103,7 +104,7 @@ fun ConfirmEmailView(
 
             Text(
                 text = "Hemos enviado un código de verificación a tu correo",
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
@@ -112,7 +113,7 @@ fun ConfirmEmailView(
 
             Text(
                 text = "Código",
-                style = MaterialTheme.typography.labelSmall,
+                style = AppTypography.bodyLarge,
                 color = Subtitulos,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
