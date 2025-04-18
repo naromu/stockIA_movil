@@ -116,8 +116,9 @@ fun CustomTextField(
     onValueChange: (String) -> Unit = {},
     label: String = "",
     allowedPattern: Regex = Regex("[^\\w\\sáéíóúñÁÉÍÓÚÑ@.,-]"),
-    maxLength: Int = 100
-) {
+    maxLength: Int = 100,
+    modifier: Modifier = Modifier.fillMaxWidth()
+    ) {
     OutlinedTextField(
         value = value,
         onValueChange = { newValue ->
@@ -128,7 +129,7 @@ fun CustomTextField(
                     onValueChange(filteredValue)
                 }
             }},
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(

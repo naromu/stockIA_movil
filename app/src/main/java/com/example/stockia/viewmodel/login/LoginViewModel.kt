@@ -1,10 +1,8 @@
 package com.example.stockia.viewmodel.login
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
@@ -76,7 +74,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     val body = response.body()
                     if (body?.status == "success") {
                         val token = body.data?.token ?: ""
+
                         saveLoginData(token, email)
+                        fetchUserProfile()
+
                         loginResult = "success"
                     } else {
                         loginResult = body?.message ?: "Error desconocido"
@@ -93,6 +94,25 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             } finally {
                 isLoading = false
             }
+
+
+        }
+
+
+    }
+
+    private suspend fun fetchUserProfile() {
+        try {
+            val resp = RetrofitClient.api.getProfile()
+            if (resp.isSuccessful && resp.body()?.status == "success") {
+                resp.body()!!.data?.let { profile ->
+                    prefsHelper.saveProfileData(profile)
+                }
+            } else {
+                Log.w("LoginVM", "Profile error: ${resp.errorBody()?.string()}")
+            }
+        } catch (e: Exception) {
+            Log.e("LoginVM", "FetchProfile failed: ${e.message}")
         }
     }
 

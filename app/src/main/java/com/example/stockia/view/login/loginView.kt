@@ -74,7 +74,7 @@ fun LoginView(
                 }
             }
 
-            "Cuenta pendiente por confirmar" -> {
+            "Cuenta pendiente por confirmar. Se ha enviado un nuevo código de confirmación a tu correo" -> {
                 Toast.makeText(context, result, Toast.LENGTH_LONG).show()
                 loginViewModel.clearLoginResult()
                 navController?.navigate(Routes.ConfirmEmailView)

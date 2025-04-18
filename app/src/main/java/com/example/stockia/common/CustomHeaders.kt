@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.stockia.R
+import com.example.stockia.routes.Routes
 import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
@@ -161,10 +162,10 @@ fun SideMenu(
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = null,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(36.dp)
             )
             Spacer(Modifier.width(8.dp))
-            Text(text = nameUser, style = AppTypography.titleSmall)
+            Text(text = "Empresa: $nameUser " , style = AppTypography.titleSmall)
         }
 
         Spacer(Modifier.height(10.dp))
@@ -176,16 +177,14 @@ fun SideMenu(
             expanded     = invExpanded,
             onHeaderClick= { invExpanded = !invExpanded }
         ) {
-            // 3. Estos sí navegan
+            MenuItem("Categorías", icon = Icons.Default.Star, selected = currentRoute == "categorias") {
+                onRouteClick(Routes.CategoriesView)
+            }
             MenuItem("Productos", icon = Icons.Default.Star, selected = currentRoute == "productos") {
                 //onRouteClick("productos")
                 Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
             }
-            MenuItem("Categorías", icon = Icons.Default.Star, selected = currentRoute == "categorias") {
-                //onRouteClick("categorias")
-                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
 
-            }
             MenuItem("Stock", icon = Icons.Default.Star, selected = currentRoute == "stock") {
                // onRouteClick("stock")
                 Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()

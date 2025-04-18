@@ -5,48 +5,70 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.stockia.routes.Routes.LoginView
-import com.example.stockia.routes.Routes.RegisterView
-import com.example.stockia.routes.Routes.ResetPasswordOneView
+import com.example.stockia.utils.LogoutEventBus
+import com.example.stockia.utils.SharedPreferencesHelper
+import com.example.stockia.utils.isJwtExpired
+import com.example.stockia.view.categories.CategoriesView
+import com.example.stockia.view.categories.EditCategoryView
+import com.example.stockia.view.categories.newCategoryView
 import com.example.stockia.view.login.ConfirmEmailView
-import com.example.stockia.view.login.HomePreview
 import com.example.stockia.view.login.HomeView
 import com.example.stockia.view.login.LoginView
 import com.example.stockia.view.login.RegisterView
-import com.example.stockia.view.login.ResetPasswordOnePreview
 import com.example.stockia.view.login.ResetPasswordOneView
 import com.example.stockia.view.login.ResetPasswordThreeView
 import com.example.stockia.view.login.ResetPasswordTwoView
-import okhttp3.Route
 
 
 @Composable
 fun AppNavHost(context: Context) {
     val navController = rememberNavController()
 
-    // Ejemplo de efecto global como cierre de sesión
+    val prefs = remember { SharedPreferencesHelper(context) }
+    val token: String? = remember { prefs.getSessionToken() }
+
+    val isSessionInvalid = token.isNullOrBlank() || token.isJwtExpired()
+
+    LaunchedEffect(isSessionInvalid) {
+        if (isSessionInvalid) {
+            prefs.clearSession()
+        }
+    }
+
+    val startDestination = if (isSessionInvalid) {
+        Routes.LoginView
+    } else {
+        Routes.HomeView
+    }
+
     LaunchedEffect(Unit) {
-        // Simulación de evento global (puedes usar StateFlow o EventBus)
-        // launch { yourEventBus.collect { navController.navigate("login") } }
+        LogoutEventBus.events.collect {
+            Toast.makeText(context, "Sesión expirada", Toast.LENGTH_SHORT).show()
+
+            navController.navigate(Routes.LoginView) {
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+            }
+        }
     }
 
     NavHost(
         navController = navController,
-        startDestination = Routes.LoginView
+        startDestination = startDestination
     ) {
         composable(Routes.LoginView) {
             LoginView(navController)
-            BackHandler { /* bloquear retroceso si es necesario */ }
+            BackHandler {  }
         }
 
         composable(Routes.RegisterView){
             RegisterView(navController)
-            BackHandler { /* bloquear retroceso si es necesario */ }
+            BackHandler { }
         }
 
         composable(Routes.ConfirmEmailView){
@@ -79,6 +101,29 @@ fun AppNavHost(context: Context) {
 
             ResetPasswordThreeView(navController, code = code)
             BackHandler { }
+        }
+
+        composable(Routes.CategoriesView){
+            CategoriesView(navController)
+            BackHandler { }
+        }
+
+        composable(Routes.newCategoryView){
+            newCategoryView(navController)
+            BackHandler { }
+        }
+
+        composable(
+            route = "${Routes.EditCategoryView}/{categoryId}",
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            // extraes el ID y lo pasas al Composable
+            val id = backStackEntry.arguments!!.getInt("categoryId")
+            EditCategoryView(navController = navController, categoryId = id)
+            BackHandler { }
+
         }
 
 

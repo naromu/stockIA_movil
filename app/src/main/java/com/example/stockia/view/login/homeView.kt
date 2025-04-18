@@ -28,6 +28,7 @@ import com.example.stockia.common.SideMenu
 import com.example.stockia.routes.Routes
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
+import com.example.stockia.utils.SharedPreferencesHelper
 
 @Composable
 fun HomeView(
@@ -41,6 +42,8 @@ fun HomeView(
     var headerHeightPx by remember { mutableStateOf(0) }
     val density = LocalDensity.current
     val headerHeightDp = with(density) { headerHeightPx.toDp() }
+
+    val company = remember { SharedPreferencesHelper(context).getCompanyName() }
 
     LaunchedEffect(homeViewModel.resultMessage) {
         when (homeViewModel.resultMessage) {
@@ -78,8 +81,7 @@ fun HomeView(
                     text = "Categorías",
                     iconRes = R.drawable.categorias,
                     onClick = {
-                        Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
-
+                        navController.navigate(Routes.CategoriesView)
                     }
                 )
                 Spacer(modifier = Modifier.height(24.dp))
@@ -131,7 +133,7 @@ fun HomeView(
                     .fillMaxWidth()
                     .fillMaxHeight(),
                 currentRoute = navController.currentBackStackEntry?.destination?.route ?: "",
-                nameUser = "La Isis",
+                nameUser = company,
                 onRouteClick = { route ->
                     menuOpen = false
                     navController.navigate(route)

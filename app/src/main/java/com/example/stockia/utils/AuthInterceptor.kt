@@ -1,8 +1,13 @@
 package com.example.stockia.network
 
+import com.example.stockia.utils.LogoutEventBus
 import com.example.stockia.utils.SharedPreferencesHelper
+import com.example.stockia.utils.isJwtExpired
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.io.IOException
 
 class AuthInterceptor(private val prefs: SharedPreferencesHelper) : Interceptor {
 
@@ -16,22 +21,26 @@ class AuthInterceptor(private val prefs: SharedPreferencesHelper) : Interceptor 
     )
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val originalRequest = chain.request()
+        val request = chain.request()
+        val path = request.url.encodedPath
 
-        val urlPath = originalRequest.url.encodedPath
-
-        val shouldSkipToken = publicPaths.any { path ->
-            urlPath.contains(path)
+        if (publicPaths.any { path.contains(it) }) {
+            return chain.proceed(request)
         }
 
-        val requestBuilder = originalRequest.newBuilder()
-
-        if (!shouldSkipToken) {
-            prefs.getSessionToken()?.let { token ->
-                requestBuilder.addHeader("Authorization", "Bearer $token")
+        val token = prefs.getSessionToken()
+        if (token.isNullOrBlank() || token.isJwtExpired()) {
+            prefs.clearSession()
+            kotlinx.coroutines.GlobalScope.launch(Dispatchers.Main) {
+                LogoutEventBus.publishLogout()
             }
+            throw IOException("TOKEN_EXPIRED")
+
         }
 
-        return chain.proceed(requestBuilder.build())
+        val newRequest = request.newBuilder()
+            .addHeader("Authorization", "Bearer $token")
+            .build()
+        return chain.proceed(newRequest)
     }
 }

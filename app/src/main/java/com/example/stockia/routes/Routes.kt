@@ -10,5 +10,7 @@ object Routes {
     const val ResetPasswordTwoView  = "ResetPasswordTwoViewModel "
     const val ResetPasswordThreeView  = "ResetPasswordThreeViewModel "
 
-
+    const val CategoriesView = "CategoriesView"
+    const val newCategoryView = "newCategoryView"
+    const val EditCategoryView = "EditCategoryView"
 }

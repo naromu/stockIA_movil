@@ -1,5 +1,7 @@
 package com.example.stockia.model
 
+import com.google.gson.annotations.SerializedName
+
 data class RegisterRequest(
     val fullName: String,
     val companyName: String,
@@ -68,3 +70,18 @@ data class ResetPasswordThreeResponse(
     val message: String,
     val data: LoginData?
 )
+
+data class ProfileData(
+    val id: Int,
+    @SerializedName("full_name") val fullName: String,
+    @SerializedName("company_name") val companyName: String,
+    val email: String,
+    val phone: String
+)
+
+data class ProfileResponse(
+    val status: String,
+    val message: String,
+    val data: ProfileData?
+)
+

@@ -2,6 +2,7 @@ package com.example.stockia.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.stockia.model.ProfileData
 
 class SharedPreferencesHelper(context: Context) {
 
@@ -44,6 +45,18 @@ class SharedPreferencesHelper(context: Context) {
         }
     }
 
+    fun saveProfileData(profile: ProfileData) {
+        with(sharedPref.edit()) {
+            putString("user_full_name", profile.fullName)
+            putString("user_company_name", profile.companyName)
+            putString("user_phone", profile.phone)
+            apply()
+        }
+    }
+
+    fun getCompanyName(): String =
+        sharedPref.getString("user_company_name", "") ?: ""
+
     // ============================= VERIFICACIÓN ============================= //
 
     fun setVerificationStatus(isVerified: Boolean) {
@@ -56,4 +69,6 @@ class SharedPreferencesHelper(context: Context) {
     fun isVerified(): Boolean {
         return sharedPref.getBoolean("is_verified", false)
     }
+
+
 }
