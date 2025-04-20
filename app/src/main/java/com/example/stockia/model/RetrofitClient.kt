@@ -5,6 +5,7 @@ import com.example.stockia.utils.SharedPreferencesHelper
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
     fun create(context: Context): ApiService {

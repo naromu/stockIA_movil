@@ -50,6 +50,7 @@ import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
 
 import com.example.stockia.viewmodel.login.LoginViewModel
+import com.journeyapps.barcodescanner.CaptureActivity
 
 @Composable
 fun LoginView(
@@ -207,3 +208,6 @@ fun LoginPreview() {
         )
     }
 }
+
+/** Actividad ZXing que usaremos para bloquear la orientación en retrato */
+class PortraitCaptureActivity : CaptureActivity()

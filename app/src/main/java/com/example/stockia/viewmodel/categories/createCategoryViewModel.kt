@@ -13,7 +13,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class NewCategoryViewModel : ViewModel() {
+class CreateCategoryViewModel : ViewModel() {
 
     var name by mutableStateOf("")
         private set

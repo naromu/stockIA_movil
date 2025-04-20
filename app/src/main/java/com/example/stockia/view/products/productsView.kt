@@ -1,6 +1,7 @@
-package com.example.stockia.view.categories
+package com.example.stockia.view.products
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,54 +38,60 @@ import com.example.stockia.R
 import com.example.stockia.common.CategoryTextButton
 import com.example.stockia.common.CustomTextField
 import com.example.stockia.common.HeaderWithBackArrow
+import com.example.stockia.common.ProductTextButton
 import com.example.stockia.routes.Routes
+import com.example.stockia.scanner.PortraitCaptureActivity
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.StockIATheme
-import com.example.stockia.viewmodel.categories.CategoriesViewModel
+import com.example.stockia.viewmodel.products.ProductsViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
+import com.journeyapps.barcodescanner.ScanOptions.ALL_CODE_TYPES
 
 @Composable
-fun CategoriesView(
+fun ProductsView(
     navController: NavController,
-    CategoriesViewModel: CategoriesViewModel = viewModel()
-
+    viewModel: ProductsViewModel = viewModel()
 ) {
-    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
-    LaunchedEffect(CategoriesViewModel.resultMessage) {
-        CategoriesViewModel.resultMessage?.let { msg ->
+    val barcodeLauncher = rememberLauncherForActivityResult(
+        contract = ScanContract()
+    ) { result: ScanIntentResult ->
+        result.contents?.let { viewModel.onBarCodeScanned(it) }
+    }
+
+    LaunchedEffect(viewModel.resultMessage) {
+        viewModel.resultMessage?.let { msg ->
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-            CategoriesViewModel.clearResultMessage()
+            viewModel.clearResultMessage()
         }
     }
 
     LaunchedEffect(navController.currentBackStackEntry) {
-        CategoriesViewModel.loadCategories()
+        viewModel.loadProducts()
     }
-
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
             .background(BlancoBase)
-            .padding(24.dp),
-        contentAlignment = Alignment.TopCenter
+            .padding(24.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
-
             HeaderWithBackArrow(
-                text = "Categorías",
-                onClick = { navController?.popBackStack() }
+                text = "Productos",
+                onClick = { navController.popBackStack() }
             )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
@@ -93,29 +100,44 @@ fun CategoriesView(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CustomTextField(
-                    value = CategoriesViewModel.searchCategory,
-                    onValueChange = CategoriesViewModel::onSearchCategoryChange,
-                    label = "Buscar categoría",
+                    value = viewModel.searchQuery,
+                    onValueChange = viewModel::onSearchQueryChange,
+                    label = "Buscar nombre o código de barras",
                     modifier = Modifier.weight(1f)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Image(
+                    painter = painterResource(R.drawable.barcode),
+                    contentDescription = "Nuevo",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clickable {
+                            val options = ScanOptions().apply {
+                                setDesiredBarcodeFormats(ALL_CODE_TYPES)
+                                setPrompt("Apunta al código de barras")
+                                setCaptureActivity(PortraitCaptureActivity::class.java)
+                            }
+                            barcodeLauncher.launch(options)
+                        }
                 )
                 Spacer(Modifier.width(16.dp))
                 Image(
                     painter = painterResource(R.drawable.plus),
-                    contentDescription = "Nuevo",
+                    contentDescription = "Nuevo producto",
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            navController.navigate(Routes.createCategoryView)
+                            navController.navigate(Routes.CreateProductView)
                         }
                 )
             }
-            Spacer(Modifier.height(16.dp))
-
-            val isRefreshing = CategoriesViewModel.isLoading
+            Spacer(modifier = Modifier.height(16.dp))
 
             SwipeRefresh(
-                state = rememberSwipeRefreshState(isRefreshing),
-                onRefresh = { CategoriesViewModel.loadCategories() },
+                state = rememberSwipeRefreshState(viewModel.isLoading),
+                onRefresh = { viewModel.loadProducts() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -124,11 +146,15 @@ fun CategoriesView(
                     Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(CategoriesViewModel.filteredCategories) { category ->
-                        CategoryTextButton(
-                            text = category.name,
+                    items(viewModel.filteredProducts) { product ->
+                        ProductTextButton(
+                            name = product.name,
+                            description = product.description,
+                            unitPrice = product.unitPrice,
+                            imageUrl = product.imageUrl,
+                            quantity = product.quantity,
                             onClick = {
-                                navController.navigate("${Routes.EditCategoryView}/${category.id}")
+                                navController.navigate("${Routes.EditProductView}/${product.id}")
                             }
                         )
                     }
@@ -138,10 +164,11 @@ fun CategoriesView(
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
-fun CategoriesViewPreview() {
+fun ProductsViewPreview() {
     StockIATheme {
-        CategoriesView(navController = rememberNavController())
+        ProductsView(navController = rememberNavController())
     }
 }

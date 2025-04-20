@@ -8,7 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.Category
 import com.example.stockia.model.CategoriesResponse
+import com.example.stockia.model.LoginResponse
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.net.SocketTimeoutException
 
 class CategoriesViewModel : ViewModel() {
 
@@ -28,7 +32,7 @@ class CategoriesViewModel : ViewModel() {
         private set
 
     val isFormValid: Boolean
-        get() = true  // aquí no hay validación extra
+        get() = true
 
     init {
         loadCategories()
@@ -69,12 +73,24 @@ class CategoriesViewModel : ViewModel() {
                         resultMessage = body?.message ?: "Respuesta inesperada"
                     }
                 } else {
-                    resultMessage = "Error ${response.code()}: al obtener categorías"
+                    val errorJson = response.errorBody()?.string()
+                    val error = Gson().fromJson(errorJson, LoginResponse::class.java)
+                    resultMessage = error?.message ?: "Error desconocido"
+                    Log.e("NewCategoryVM", "HTTP ${response.code()} - ${response.errorBody()?.string()}")
+
                 }
+            } catch (e: SocketTimeoutException) {
+                resultMessage = "El servidor tardó demasiado en responder. Intenta de nuevo."
+                Log.d("CreateProductVM", "Timeout", e)
+            } catch (e: IOException) {
+                resultMessage = "Error de red: ${e.localizedMessage}"
+                Log.d("CreateProductVM", "IO error", e)
             } catch (e: Exception) {
-                resultMessage = e.localizedMessage ?: "Error desconocido"
+                resultMessage = "Error inesperado: ${e.localizedMessage}"
+                Log.d("CreateProductVM", "Unexpected error", e)
+            } finally {
+                isLoading = false
             }
-            isLoading = false
         }
     }
 }

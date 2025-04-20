@@ -24,6 +24,14 @@ val AppTypography = Typography(
         letterSpacing = 0.5 .sp,
         color = LetraPrincipal
     ),
+    bodyMedium = TextStyle(
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.5 .sp,
+        color = LetraPrincipal
+    ),
     titleLarge = TextStyle(
         fontFamily = Poppins,
         fontWeight = FontWeight.Bold,

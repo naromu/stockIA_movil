@@ -81,6 +81,10 @@ dependencies {
 
     implementation ("com.google.accompanist:accompanist-swiperefresh:0.30.1")
 
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    implementation ("io.coil-kt:coil-compose:2.2.2")
+
 
 
 
