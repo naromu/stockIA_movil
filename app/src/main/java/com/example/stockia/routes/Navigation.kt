@@ -11,12 +11,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.stockia.routes.Routes.CreateProductView
+import com.example.stockia.routes.Routes.ProductsView
 import com.example.stockia.utils.LogoutEventBus
 import com.example.stockia.utils.SharedPreferencesHelper
 import com.example.stockia.utils.isJwtExpired
 import com.example.stockia.view.categories.CategoriesView
 import com.example.stockia.view.categories.EditCategoryView
-import com.example.stockia.view.categories.newCategoryView
+import com.example.stockia.view.categories.createCategoryView
 import com.example.stockia.view.login.ConfirmEmailView
 import com.example.stockia.view.login.HomeView
 import com.example.stockia.view.login.LoginView
@@ -32,6 +34,10 @@ import com.example.stockia.view.providers.NewProviderView
 import com.example.stockia.view.providers.EditProviderView
 
 
+import com.example.stockia.view.products.CreateProductView
+import com.example.stockia.view.products.CreateProductViewPreview
+import com.example.stockia.view.products.EditProductView
+import com.example.stockia.view.products.ProductsView
 
 
 @Composable
@@ -116,8 +122,8 @@ fun AppNavHost(context: Context) {
             BackHandler { }
         }
 
-        composable(Routes.newCategoryView){
-            newCategoryView(navController)
+        composable(Routes.createCategoryView){
+            createCategoryView(navController)
             BackHandler { }
         }
 
@@ -127,7 +133,6 @@ fun AppNavHost(context: Context) {
                 navArgument("categoryId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
-            // extraes el ID y lo pasas al Composable
             val id = backStackEntry.arguments!!.getInt("categoryId")
             EditCategoryView(navController = navController, categoryId = id)
             BackHandler { }
@@ -179,6 +184,27 @@ fun AppNavHost(context: Context) {
 
 
 
+        //Products
+        composable(Routes.ProductsView){
+            ProductsView(navController)
+            BackHandler { }
+        }
+        composable(Routes.CreateProductView){
+            CreateProductView(navController)
+            BackHandler { }
+        }
+
+        composable(
+            route = "${Routes.EditProductView}/{productId}",
+            arguments = listOf(
+                navArgument("productId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments!!.getInt("productId")
+            EditProductView(navController = navController, productId = id)
+            BackHandler { }
+
+        }
 
     }
 }

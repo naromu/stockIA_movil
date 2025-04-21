@@ -2,6 +2,7 @@ package com.example.stockia.common
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -26,19 +30,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.stockia.R
 import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.AzulPrincipal
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.ui.theme.Poppins
 import com.example.stockia.ui.theme.StockIATheme
+import java.text.DecimalFormat
 
 
 @Composable
@@ -95,10 +105,10 @@ fun IconTextButton(
         modifier = modifier
             .fillMaxWidth()
             .shadow(
-                elevation = 4.dp,  // Altura de la sombra
+                elevation = 4.dp,
                 shape = RoundedCornerShape(14.dp),
-                clip = false,  // Permite que la sombra se vea fuera del límite del componente
-                spotColor = Color.Gray.copy(alpha = 0.5f)  // Color de la sombra
+                clip = false,
+                spotColor = Color.Gray.copy(alpha = 0.5f)
             )
             .height(90.dp),
         shape = RoundedCornerShape(16.dp),
@@ -156,18 +166,18 @@ fun CategoryTextButton(
         modifier = modifier
             .fillMaxWidth()
             .shadow(
-                elevation = 4.dp,  // Altura de la sombra
+                elevation = 4.dp,
                 shape = RoundedCornerShape(14.dp),
-                clip = false,  // Permite que la sombra se vea fuera del límite del componente
-                spotColor = Color.Gray.copy(alpha = 0.5f)  // Color de la sombra
+                clip = false,
+                spotColor = Color.Gray.copy(alpha = 0.5f)
             )
-            .heightIn(min = 60.dp),  // Altura mínima pero puede expandirse
+            .heightIn(min = 60.dp),
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor =Color.White,
         ),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)  // Padding consistente
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
     ) {
 
         Row(
@@ -218,6 +228,136 @@ fun CategoryTextButtonPreview() {
         }
     }
 }
+@Composable
+fun ProductTextButton(
+    name: String?,
+    imageUrl: String? = "",
+    description: String? = "",
+    unitPrice: String?,
+    onClick: () -> Unit,
+    quantity: String? = "0",
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    OutlinedButton(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(14.dp),
+                clip = false,
+                spotColor = Color.Gray.copy(alpha = 0.5f)
+            )
+            .heightIn(min = 80.dp),
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = Color.White,
+        ),
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 12.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            AsyncImage(
+                model = imageUrl?.let { "http://173.212.224.226:3000$it" },
+                contentDescription = "Foto producto",
+                placeholder = rememberVectorPainter(Icons.Default.Photo),
+                error = rememberVectorPainter(Icons.Default.Photo),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.LightGray.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
+
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
+            ) {
+                name?.let {
+                    Text(
+                        text = it,
+                        style = AppTypography.bodyLarge,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+
+                if (!description.isNullOrEmpty()) {
+                    Text(
+                        text = description,
+                        style = AppTypography.labelSmall,
+                        color = Color.Gray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+                val format = DecimalFormat("#")
+
+                Text(
+                    text = "Cantidad: ${quantity?.let { format.format(it.toDouble()) }}",
+                    style = AppTypography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+
+                Text(
+                    text = "$${unitPrice?.let { "%,.2f".format(it.toDouble()) }}",
+                    style = AppTypography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            Image(
+                painter = painterResource(id = R.drawable.lapiz),
+                contentDescription = "Editar",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable(onClick = onClick)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 300)
+@Composable
+fun  ProductTextButtonPreview() {
+    StockIATheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+
+            ProductTextButton(
+                name = "Categorías",
+                description = "ajdshlksajdhslahsad sjdnfksdjhf sdjfhsjkdfhsjkdhfdksjfhskdf",
+                unitPrice = "310121",
+                onClick = {}
+            )
+
+            ProductTextButton(
+                name = "Categorías extremadamente largas que necesitan mucho espacio",
+                description = "asjdhsaljkdasjd",
+                unitPrice = "310121",
+                onClick = {}
+            )
+        }
+    }
+}
+
 
 
 

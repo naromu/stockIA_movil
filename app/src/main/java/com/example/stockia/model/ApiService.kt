@@ -1,11 +1,17 @@
 package com.example.stockia.model
 
+import MeasurementsResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Path
 
 interface ApiService {
@@ -79,6 +85,42 @@ interface ApiService {
     suspend fun deleteProvider(@Path("id") id: Int): Response<DeleteProviderResponse>
 
 
+
+    //Products
+    @GET("products")
+    suspend fun getProducts(): Response<ProductsResponse>
+
+    @Multipart
+    @POST("products")
+    suspend fun createProduct(
+        @Part("name") name: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("unitPrice") unitPrice: RequestBody,
+        @Part("unitCost") unitCost: RequestBody,
+        @Part("quantity") quantity: RequestBody,
+        @Part("barcode") barcode: RequestBody,
+        @Part("categoryId") categoryId: RequestBody,
+        @Part("unitOfMeasureId") unitOfMeasureId: RequestBody,
+        @Part image: MultipartBody.Part?
+    ): Response<CreateProductResponse>
+
+    @GET("products/{id}")
+    suspend fun getProduct(@Path("id") id: Int): Response<GetProductResponse>
+
+    @DELETE("products/{id}")
+    suspend fun deleteProduct(@Path("id") id: Int): Response<GenericResponse>
+
+    @Multipart
+    @PUT("products/{id}")
+    suspend fun updateProductWithImage(
+        @Path("id") id: Int,
+        @PartMap fields: Map<String, @JvmSuppressWildcards RequestBody>,
+        @Part image: MultipartBody.Part?
+    ): Response<UpdateProductResponse>
+
+    //measurement
+    @GET("measurements")
+    suspend fun getMeasurements(): Response<MeasurementsResponse>
 
 
 }

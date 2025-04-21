@@ -106,7 +106,7 @@ fun EditCategoryView(
         Spacer(Modifier.height(32.dp))
 
         CustomButtonBlue(
-            text = if (!viewModel.isLoading) "Guardar cambios" else "Guardando",
+            text = if (!viewModel.isLoading) "Guardar" else "Guardando",
             enabled = viewModel.isFormValid && !viewModel.isLoading ,
             onClick = { viewModel.onUpdateClick(categoryId) }
         )
