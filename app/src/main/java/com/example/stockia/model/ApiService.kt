@@ -46,5 +46,39 @@ interface ApiService {
     @DELETE("categories/{id}")
     suspend fun deleteCategory(@Path("id") id: Int): Response<DeleteCategoryResponse>
 
+    // Clientes
+    @GET("customers")
+    suspend fun getClients(): Response<ClientsResponse>
+
+    @GET("customers/{id}")
+    suspend fun getClientById(@Path("id") id: Int): Response<GetClientResponse>
+
+    @POST("customers")
+    suspend fun createClient(@Body request: CreateClientRequest): Response<CreateClientResponse>
+
+    @PUT("customers/{id}")
+    suspend fun updateClient(@Path("id") id: Int, @Body request: UpdateClientRequest): Response<UpdateClientResponse>
+
+    @DELETE("customers/{id}")
+    suspend fun deleteClient(@Path("id") id: Int): Response<DeleteClientResponse>
+
+    // Providers
+    @GET("suppliers")
+    suspend fun getProviders(): Response<ProvidersResponse>
+
+    @POST("suppliers")
+    suspend fun createProvider(@Body request: CreateProviderRequest): Response<CreateProviderResponse>
+
+    @GET("suppliers/{id}")
+    suspend fun getProviderById(@Path("id") id: Int): Response<GetProviderResponse>
+
+    @PUT("suppliers/{id}")
+    suspend fun updateProvider(@Path("id") id: Int, @Body request: UpdateProviderRequest): Response<UpdateProviderResponse>
+
+    @DELETE("suppliers/{id}")
+    suspend fun deleteProvider(@Path("id") id: Int): Response<DeleteProviderResponse>
+
+
+
 
 }

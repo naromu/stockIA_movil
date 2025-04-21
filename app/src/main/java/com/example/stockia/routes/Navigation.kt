@@ -24,6 +24,14 @@ import com.example.stockia.view.login.RegisterView
 import com.example.stockia.view.login.ResetPasswordOneView
 import com.example.stockia.view.login.ResetPasswordThreeView
 import com.example.stockia.view.login.ResetPasswordTwoView
+import com.example.stockia.view.clients.ClientsView
+import com.example.stockia.view.clients.EditClientView
+import com.example.stockia.view.clients.NewClientView
+import com.example.stockia.view.providers.ProvidersView
+import com.example.stockia.view.providers.NewProviderView
+import com.example.stockia.view.providers.EditProviderView
+
+
 
 
 @Composable
@@ -125,6 +133,51 @@ fun AppNavHost(context: Context) {
             BackHandler { }
 
         }
+
+        composable(Routes.ClientsView) {
+            ClientsView(navController)
+            BackHandler { }
+        }
+
+        composable(Routes.NewClientView) {
+            NewClientView(navController)
+            BackHandler { }
+        }
+
+        composable(
+            route = "${Routes.EditClientView}/{id}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id") ?: return@composable
+            EditClientView(navController = navController, clientId = id)
+            BackHandler { }
+        }
+
+        // PROVEEDORES
+        composable(Routes.ProvidersView) {
+            ProvidersView(navController)
+            BackHandler { }
+        }
+
+        composable(Routes.NewProviderView) {
+            NewProviderView(navController)
+            BackHandler { }
+        }
+
+        composable(
+            route = "${Routes.EditProviderView}/{id}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id") ?: return@composable
+            EditProviderView(navController = navController, providerId = id)
+            BackHandler { }
+        }
+
+
 
 
     }

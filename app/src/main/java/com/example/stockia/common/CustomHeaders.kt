@@ -235,8 +235,7 @@ fun SideMenu(
             icon     = Icons.Default.Star,
             selected = currentRoute == "clientes"
         ) {
-            //onRouteClick("clientes")
-            Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+            onRouteClick(Routes.ClientsView)
 
         }
         MenuHeaderItem(
@@ -244,9 +243,7 @@ fun SideMenu(
             icon     = Icons.Default.Star,
             selected = currentRoute == "proveedores"
         ) {
-            //onRouteClick("proveedores")
-            Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
-
+            onRouteClick(Routes.ProvidersView)
         }
         MenuHeaderItem(
             title    = "Estadísticas",

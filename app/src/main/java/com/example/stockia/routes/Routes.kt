@@ -13,4 +13,15 @@ object Routes {
     const val CategoriesView = "CategoriesView"
     const val newCategoryView = "newCategoryView"
     const val EditCategoryView = "EditCategoryView"
+
+    const val ClientsView = "ClientsView"
+    const val NewClientView = "NewClientView"
+    const val EditClientView = "EditClientView"
+
+    // Proveedores
+    const val ProvidersView = "ProvidersView"
+    const val NewProviderView = "NewProviderView"
+    const val EditProviderView = "EditProviderView"
+
+
 }
