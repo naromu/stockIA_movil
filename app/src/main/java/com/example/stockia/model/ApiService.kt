@@ -84,6 +84,26 @@ interface ApiService {
     @DELETE("suppliers/{id}")
     suspend fun deleteProvider(@Path("id") id: Int): Response<DeleteProviderResponse>
 
+    // Sales Orders
+    @POST("sales-orders")
+    suspend fun createSalesOrder(@Body request: CreateSalesOrderRequest): Response<SalesOrderResponse>
+
+    @GET("sales-orders")
+    suspend fun getSalesOrders(): Response<SalesOrdersListResponse>
+
+    @GET("sales-orders/{id}")
+    suspend fun getSalesOrderById(@Path("id") id: Int): Response<SalesOrderDetailResponse>
+
+    @PUT("sales-orders/{id}")
+    suspend fun updateSalesOrder(
+        @Path("id") id: Int,
+        @Body request: CreateSalesOrderRequest
+    ): Response<SalesOrderResponse>
+
+    @DELETE("sales-orders/{id}")
+    suspend fun deleteSalesOrder(@Path("id") id: Int): Response<DeleteSalesOrderResponse>
+
+
 
 
     //Products
@@ -121,6 +141,11 @@ interface ApiService {
     //measurement
     @GET("measurements")
     suspend fun getMeasurements(): Response<MeasurementsResponse>
+
+    //Status
+    @GET("status")
+    suspend fun getStatus(): Response<StatusResponse>
+
 
 
 }

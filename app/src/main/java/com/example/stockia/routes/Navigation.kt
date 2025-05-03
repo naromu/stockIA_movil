@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.stockia.routes.Routes.CreateProductView
+import com.example.stockia.routes.Routes.NewSalesOrderView
 import com.example.stockia.routes.Routes.ProductsView
 import com.example.stockia.utils.LogoutEventBus
 import com.example.stockia.utils.SharedPreferencesHelper
@@ -32,12 +33,15 @@ import com.example.stockia.view.clients.NewClientView
 import com.example.stockia.view.providers.ProvidersView
 import com.example.stockia.view.providers.NewProviderView
 import com.example.stockia.view.providers.EditProviderView
+import com.example.stockia.view.salesOrder.SalesOrdersView
+import com.example.stockia.view.salesOrder.NewSalesOrderView
 
 
 import com.example.stockia.view.products.CreateProductView
 import com.example.stockia.view.products.CreateProductViewPreview
 import com.example.stockia.view.products.EditProductView
 import com.example.stockia.view.products.ProductsView
+import com.example.stockia.view.salesOrder.CompleteSalesOrderView
 
 
 @Composable
@@ -181,6 +185,40 @@ fun AppNavHost(context: Context) {
             EditProviderView(navController = navController, providerId = id)
             BackHandler { }
         }
+    //SALES ORDERS
+        composable(Routes.SalesOrdersView) {
+            SalesOrdersView(navController)
+            BackHandler { }
+        }
+
+        composable(Routes.NewSalesOrderView){
+            NewSalesOrderView(navController)
+            BackHandler { }
+        }
+
+        composable(
+            route = Routes.CompleteSalesOrderViewWithArgs,
+            arguments = listOf(
+                navArgument("selectedProducts") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                    nullable = true
+                }
+            )
+        ) { backStackEntry ->
+            val selectedProductIds = backStackEntry.arguments
+                ?.getString("selectedProducts")
+                ?.takeIf { it.isNotEmpty() }
+                ?.split(",")
+                ?.mapNotNull { it.toIntOrNull() }
+                ?: emptyList()
+
+            CompleteSalesOrderView(navController = navController, selectedProductIds = selectedProductIds)
+            BackHandler { }
+        }
+
+
+
 
 
 

@@ -18,14 +18,22 @@ object Routes {
     const val NewClientView = "NewClientView"
     const val EditClientView = "EditClientView"
 
+    //Procductos
+    const val ProductsView = "ProductsView"
+    const val CreateProductView = "CreateProductView"
+    const val EditProductView = "EditProductView"
+
     // Proveedores
     const val ProvidersView = "ProvidersView"
     const val NewProviderView = "NewProviderView"
     const val EditProviderView = "EditProviderView"
 
+    //Ordenes de Venta
+    const val SalesOrdersView = "SalesOrdersView"
+    const val NewSalesOrderView = "NewSalesOrderView"
+    const val CompleteSalesOrderView = "CompleteSalesOrderView"
+    const val CompleteSalesOrderViewWithArgs = "$CompleteSalesOrderView?selectedProducts={selectedProducts}"
+    const val EditSalesOrderView = "EditSalesOrderView"
 
 
-    const val ProductsView = "ProductsView"
-    const val CreateProductView = "CreateProductView"
-    const val EditProductView = "EditProductView"
 }

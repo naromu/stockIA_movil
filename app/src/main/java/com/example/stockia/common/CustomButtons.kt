@@ -332,6 +332,20 @@ fun ProductTextButton(
     }
 }
 
+@Composable
+fun DynamicSelectionButton(
+    selectedCount: Int,
+    onClick: () -> Unit
+) {
+    CustomButtonBlue(
+        text = if (selectedCount > 0) "$selectedCount items seleccionados" else "Seleccionar productos",
+        enabled = selectedCount > 0,
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+
 @Preview(showBackground = true, widthDp = 300)
 @Composable
 fun  ProductTextButtonPreview() {

@@ -199,8 +199,7 @@ fun SideMenu(
             onHeaderClick= { ventasExpanded = !ventasExpanded }
         ) {
             MenuItem("Órdenes de venta", icon = Icons.Default.Star, selected = currentRoute == "ordenes_de_venta") {
-                //onRouteClick("ordenes_de_venta")
-                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+                onRouteClick(Routes.SalesOrdersView)
 
             }
             MenuItem("Devoluciones", icon = Icons.Default.Star, selected = currentRoute == "devoluciones_de_venta") {
