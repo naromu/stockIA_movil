@@ -77,7 +77,6 @@ fun CompleteSalesOrderView(
                 ProductCardWithQuantity(
                     name = product.name,
                     description = product.description,
-                    imageUrl = product.imageUrl,
                     unitPrice = product.unitPrice.toDoubleOrNull() ?: 0.0,
                     quantity = product.quantity,
                     onIncrease = { viewModel.increaseQuantity(product.id) },
