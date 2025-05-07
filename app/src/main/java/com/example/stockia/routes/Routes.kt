@@ -35,5 +35,10 @@ object Routes {
     const val CompleteSalesOrderViewWithArgs = "$CompleteSalesOrderView?selectedProducts={selectedProducts}"
     const val EditSalesOrderView = "EditSalesOrderView"
 
+    //Ordenes de compra
+    const val  PurchasesOrdersView = "PurchasesOrdersView"
+    const val  NewPurchaseOrderView = "NewPurchaseOrderView"
+    const val  CompletePurchasesOrderViewWithArgs = "CompletePurchasesOrderViewWithArgs"
+
 
 }
