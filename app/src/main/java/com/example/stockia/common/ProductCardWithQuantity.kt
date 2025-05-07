@@ -18,14 +18,12 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.stockia.ui.theme.*
 
 @Composable
 fun ProductCardWithQuantity(
     name: String,
     description: String?,
-    imageUrl: String?,
     unitPrice: Double,
     quantity: Int,
     onIncrease: () -> Unit,
@@ -44,20 +42,6 @@ fun ProductCardWithQuantity(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = imageUrl?.let { "http://173.212.224.226:3000$it" },
-                contentDescription = "Producto",
-                placeholder = rememberVectorPainter(Icons.Default.Add),
-                error = rememberVectorPainter(Icons.Default.Add),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Gris.copy(alpha = 0.2f))
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = name,
@@ -115,7 +99,6 @@ fun ProductCardWithQuantityPreview() {
         ProductCardWithQuantity(
             name = "Café Especial Supremo",
             description = "Granos seleccionados 100% arábica",
-            imageUrl = null,
             unitPrice = 15000.0,
             quantity = 2,
             onIncrease = {},
