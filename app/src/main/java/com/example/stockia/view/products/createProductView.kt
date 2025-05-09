@@ -48,6 +48,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -69,6 +70,10 @@ import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
 import com.journeyapps.barcodescanner.ScanOptions.ALL_CODE_TYPES
 
+import android.Manifest
+import android.content.pm.PackageManager
+
+
 
 @Composable
 fun CreateProductView(
@@ -84,11 +89,23 @@ fun CreateProductView(
         result.contents?.let { viewModel.onBarCodeChange(it) }
     }
 
+
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
     ) { bitmap: Bitmap? ->
         bitmap?.let { viewModel.onImageSelected(it) }
     }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            cameraLauncher.launch()
+        } else {
+            Toast.makeText(context, "Se necesita permiso de cámara", Toast.LENGTH_LONG).show()
+        }
+    }
+
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -177,9 +194,16 @@ fun CreateProductView(
             Spacer(Modifier.height(8.dp))
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                IconButton(onClick = { cameraLauncher.launch() }) {
+                IconButton(onClick = {
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        cameraLauncher.launch()
+                    } else {
+                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                }) {
                     Icon(imageVector = Icons.Default.CameraAlt, contentDescription = "Abrir cámara")
                 }
+
                 IconButton(onClick = { galleryLauncher.launch("image/*") }) {
                     Icon(imageVector = Icons.Default.PhotoLibrary, contentDescription = "Abrir galería")
                 }

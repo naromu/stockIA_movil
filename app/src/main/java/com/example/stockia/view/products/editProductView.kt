@@ -56,6 +56,11 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.journeyapps.barcodescanner.ScanOptions.ALL_CODE_TYPES
 import java.io.ByteArrayOutputStream
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProductView(
@@ -63,7 +68,7 @@ fun EditProductView(
     productId: Int,
     viewModel: EditProductViewModel = viewModel()
 ) {
-    val ctx = LocalContext.current
+    val context = LocalContext.current
 
     LaunchedEffect(productId) { viewModel.loadAll(productId) }
 
@@ -72,14 +77,27 @@ fun EditProductView(
     }
 
     val cameraLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.TakePicturePreview()
-    ) { bmp: Bitmap? -> viewModel.onImageSelected(bmp) }
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap: Bitmap? ->
+        bitmap?.let { viewModel.onImageSelected(it) }
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            cameraLauncher.launch()
+        } else {
+            Toast.makeText(context, "Se necesita permiso de cámara", Toast.LENGTH_LONG).show()
+        }
+    }
+
 
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            val bmp = MediaStore.Images.Media.getBitmap(ctx.contentResolver, it)
+            val bmp = MediaStore.Images.Media.getBitmap(context.contentResolver, it)
             viewModel.onImageSelected(bmp)
         }
     }
@@ -87,10 +105,10 @@ fun EditProductView(
     LaunchedEffect(viewModel.resultMessage) {
         viewModel.resultMessage?.let { msg ->
             if (msg == "success") {
-                Toast.makeText(ctx, "Producto actualizado", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Producto actualizado", Toast.LENGTH_LONG).show()
                 navController.popBackStack()
             } else {
-                Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
                 viewModel.clearResult()
             }
         }
@@ -175,9 +193,16 @@ fun EditProductView(
             Spacer(Modifier.height(8.dp))
 
             Row( horizontalArrangement = Arrangement.spacedBy(16.dp) ) {
-                IconButton(onClick = { cameraLauncher.launch() }) {
-                    Icon(Icons.Default.CameraAlt, contentDescription = "Cámara")
+                IconButton(onClick = {
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        cameraLauncher.launch()
+                    } else {
+                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                }) {
+                    Icon(imageVector = Icons.Default.CameraAlt, contentDescription = "Abrir cámara")
                 }
+
                 IconButton(onClick = { galleryLauncher.launch("image/*") }) {
                     Icon(Icons.Default.PhotoLibrary, contentDescription = "Galería")
                 }
