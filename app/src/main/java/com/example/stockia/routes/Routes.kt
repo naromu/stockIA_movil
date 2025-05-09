@@ -41,4 +41,7 @@ object Routes {
     const val  CompletePurchasesOrderViewWithArgs = "CompletePurchasesOrderViewWithArgs"
 
 
+    //IA
+    const val  PredictionView = "PredictionView"
+
 }

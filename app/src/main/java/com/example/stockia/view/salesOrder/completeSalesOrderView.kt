@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -108,19 +109,25 @@ fun CompleteSalesOrderView(
             Text("Resumen", style = AppTypography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.weight(1f)
-            ) {
-                items(uiState.selectedProducts) { product ->
-                    ProductCardWithQuantity(
-                        name = product.name,
-                        description = product.description,
-                        unitPrice = product.unitPrice.toDoubleOrNull() ?: 0.0,
-                        quantity = product.quantity,
-                        onIncrease = { viewModel.increaseQuantity(product.id) },
-                        onDecrease = { viewModel.decreaseQuantity(product.id) }
-                    )
+            if (uiState.isLoading) {
+
+                    CircularProgressIndicator(color = Color.Black)
+
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(uiState.selectedProducts) { product ->
+                        ProductCardWithQuantity(
+                            name = product.name,
+                            description = product.description,
+                            unitPrice = product.unitPrice.toDoubleOrNull() ?: 0.0,
+                            quantity = product.quantity,
+                            onIncrease = { viewModel.increaseQuantity(product.id) },
+                            onDecrease = { viewModel.decreaseQuantity(product.id) }
+                        )
+                    }
                 }
             }
 

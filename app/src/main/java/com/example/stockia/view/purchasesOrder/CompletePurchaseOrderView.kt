@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.stockia.common.*
+import com.example.stockia.model.NavSelectedProduct
 import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.BlancoBase
 import com.example.stockia.viewmodel.purchaseOrder.CompletePurchaseOrderViewModel
@@ -25,15 +27,28 @@ fun CompletePurchaseOrderView(
     viewModel: CompletePurchaseOrderViewModel = viewModel()
 ) {
 
+    // 1) Intentamos leer la lista de NavSelectedProduct (cantidad preseleccionada)
+    val preselectedNav: List<NavSelectedProduct> = navController
+        .previousBackStackEntry
+        ?.savedStateHandle
+        ?.get("preselectedProducts")
+        ?: emptyList()
 
-    val ids: List<Int> = navController
+    // 2) Intentamos leer la lista clásica de Int (sin cantidad)
+    val selectedIds: List<Int> = navController
         .previousBackStackEntry
         ?.savedStateHandle
         ?.get<List<Int>>("selectedProducts")
         ?: emptyList()
 
-    LaunchedEffect(ids) {
-        viewModel.loadSelectedProducts(ids)
+    // 3) Unificamos: si viene Nav, lo usamos; si no, convertimos cada ID a NavSelectedProduct con qty=1
+    val unified: List<NavSelectedProduct> = remember(preselectedNav, selectedIds) {
+        if (preselectedNav.isNotEmpty()) preselectedNav
+        else selectedIds.map { NavSelectedProduct(it, initialQuantity = 1) }
+    }
+
+    LaunchedEffect(unified) {
+        viewModel.loadSelectedProducts(unified)
     }
 
     val uiState by viewModel.uiState.collectAsState()
@@ -98,20 +113,26 @@ fun CompletePurchaseOrderView(
             Text("Resumen", style = AppTypography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.weight(1f)
-            ) {
-                items(uiState.selectedProducts) { product ->
-                    ProductCardWithQuantity(
-                        name = product.name,
-                        description = product.description,
-                        imageUrl = product.imageUrl,
-                        unitPrice = product.unitPrice.toDoubleOrNull() ?: 0.0,
-                        quantity = product.quantity,
-                        onIncrease = { viewModel.increaseQuantity(product.id) },
-                        onDecrease = { viewModel.decreaseQuantity(product.id) }
-                    )
+            if (uiState.isLoading) {
+                CircularProgressIndicator( color =  Color.Black)
+            } else {
+                // 2️⃣ Contenido principal
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
+                    items(uiState.selectedProducts) { product ->
+                        ProductCardWithQuantity(
+                            name = product.name,
+                            description = product.description,
+                            unitPrice = product.unitPrice.toDoubleOrNull() ?: 0.0,
+                            quantity = product.quantity,
+                            onIncrease = { viewModel.increaseQuantity(product.id) },
+                            onDecrease = { viewModel.decreaseQuantity(product.id) }
+                        )
+                    }
                 }
             }
 
