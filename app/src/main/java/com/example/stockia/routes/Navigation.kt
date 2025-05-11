@@ -41,6 +41,9 @@ import com.example.stockia.view.products.CreateProductView
 import com.example.stockia.view.products.CreateProductViewPreview
 import com.example.stockia.view.products.EditProductView
 import com.example.stockia.view.products.ProductsView
+import com.example.stockia.view.purchasesOrder.CompletePurchaseOrderView
+import com.example.stockia.view.purchasesOrder.NewPurchasesOrderView
+import com.example.stockia.view.purchasesOrder.PurchasesOrdersView
 import com.example.stockia.view.salesOrder.CompleteSalesOrderView
 import com.example.stockia.view.stock.StockListView
 import com.example.stockia.view.stock.EditStockView
@@ -238,6 +241,21 @@ fun AppNavHost(context: Context) {
 
             CompleteSalesOrderView(navController = navController, selectedProductIds = selectedProductIds)
             BackHandler { }
+        }
+
+        // Purchase Orders
+        composable(Routes.PurchasesOrdersView) {
+            PurchasesOrdersView(navController)
+            BackHandler { }
+        }
+
+        composable(Routes.NewPurchaseOrderView){
+            NewPurchasesOrderView(navController)
+            BackHandler { }
+        }
+
+        composable(Routes.CompletePurchasesOrderViewWithArgs) {
+            CompletePurchaseOrderView(navController = navController)
         }
 
 

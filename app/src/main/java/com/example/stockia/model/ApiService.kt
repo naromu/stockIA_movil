@@ -1,6 +1,9 @@
 package com.example.stockia.model
 
+import CreatePurchaseOrderRequest
 import MeasurementsResponse
+import PurchaseOrderResponse
+import PurchaseOrdersListResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -105,7 +108,26 @@ interface ApiService {
     @DELETE("sales-orders/{id}")
     suspend fun deleteSalesOrder(@Path("id") id: Int): Response<DeleteSalesOrderResponse>
 
+    //Purchase Orders
 
+    @GET("/purchase-orders")
+    suspend fun getPurchaseOrders(): Response<PurchaseOrdersListResponse>
+
+    @GET("/purchase-orders/{id}")
+    suspend fun getPurchaseOrderById(
+        @Path("id") id: Int
+    ): Response<PurchaseOrderResponse>
+
+    @PUT("/purchase-orders/{id}")
+    suspend fun updatePurchaseOrder(
+        @Path("id") id: Int,
+        @Body request: CreatePurchaseOrderRequest
+    ): Response<GenericResponse>
+
+    @POST("/purchase-orders")
+    suspend fun createPurchaseOrder(
+        @Body request: CreatePurchaseOrderRequest
+    ): Response<GenericResponse>
 
 
     //Products

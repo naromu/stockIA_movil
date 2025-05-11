@@ -181,8 +181,7 @@ fun SideMenu(
                 onRouteClick(Routes.CategoriesView)
             }
             MenuItem("Productos", icon = Icons.Default.Star, selected = currentRoute == "productos") {
-                //onRouteClick("productos")
-                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+                onRouteClick(Routes.ProductsView)
             }
 
             MenuItem("Stock", icon = Icons.Default.Star, selected = currentRoute == "stock") {
@@ -216,8 +215,7 @@ fun SideMenu(
             onHeaderClick= { pedidosExpanded = !pedidosExpanded }
         ) {
             MenuItem("Órdenes de compra", icon = Icons.Default.Star, selected = currentRoute == "ordenes_de_compra") {
-               // onRouteClick("ordenes_de_compra")
-                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+                onRouteClick(Routes.PurchasesOrdersView)
 
             }
             MenuItem("Devoluciones compra", icon = Icons.Default.Star, selected = currentRoute == "devoluciones_de_compra") {
