@@ -98,7 +98,7 @@ fun HomeView(
                     text = "Stock",
                     iconRes = R.drawable.stock,
                     onClick = {
-                        Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Routes.StockListView)
 
                     }
                 )

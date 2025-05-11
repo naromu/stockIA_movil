@@ -42,6 +42,8 @@ import com.example.stockia.view.products.CreateProductViewPreview
 import com.example.stockia.view.products.EditProductView
 import com.example.stockia.view.products.ProductsView
 import com.example.stockia.view.salesOrder.CompleteSalesOrderView
+import com.example.stockia.view.stock.StockListView
+import com.example.stockia.view.stock.EditStockView
 
 
 @Composable
@@ -185,7 +187,28 @@ fun AppNavHost(context: Context) {
             EditProviderView(navController = navController, providerId = id)
             BackHandler { }
         }
-    //SALES ORDERS
+
+        //Stock
+        composable("StockListView") {
+            StockListView(navController)
+        }
+
+        composable(
+            route = "EditStockView/{productId}/{currentStock}",
+            arguments = listOf(
+                navArgument("productId") { type = NavType.IntType },
+                navArgument("currentStock") { type = NavType.IntType }
+            )
+        ) {
+            val productId = it.arguments?.getInt("productId") ?: 0
+            val currentStock = it.arguments?.getInt("currentStock") ?: 0
+            EditStockView(navController, productId, currentStock)
+        }
+
+
+
+
+        //SALES ORDERS
         composable(Routes.SalesOrdersView) {
             SalesOrdersView(navController)
             BackHandler { }

@@ -28,6 +28,9 @@ object Routes {
     const val NewProviderView = "NewProviderView"
     const val EditProviderView = "EditProviderView"
 
+    //Stock
+    const val StockListView = "StockListView"
+
     //Ordenes de Venta
     const val SalesOrdersView = "SalesOrdersView"
     const val NewSalesOrderView = "NewSalesOrderView"

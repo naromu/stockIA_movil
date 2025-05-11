@@ -13,6 +13,8 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.PartMap
 import retrofit2.http.Path
+import retrofit2.http.PATCH
+
 
 interface ApiService {
     @POST("users/register")
@@ -137,6 +139,14 @@ interface ApiService {
         @PartMap fields: Map<String, @JvmSuppressWildcards RequestBody>,
         @Part image: MultipartBody.Part?
     ): Response<UpdateProductResponse>
+
+    //Stock update
+    @PATCH("products/{id}/stock")
+    suspend fun updateStock(
+        @Path("id") productId: Int,
+        @Body stockUpdateRequest: UpdateStockRequest
+    ): Response<UpdateStockResponse>
+
 
     //measurement
     @GET("measurements")
