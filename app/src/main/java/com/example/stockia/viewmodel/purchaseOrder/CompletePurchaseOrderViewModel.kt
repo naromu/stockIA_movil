@@ -21,7 +21,9 @@ data class CompletePurchaseOrderUiState(
     val selectedStatus: StatusType? = null,
     val description: String = "",
     val selectedProducts: List<SelectedProduct> = emptyList(),
-    val totalAmount: Double = 0.0
+    val totalAmount: Double = 0.0,
+    val isLoading: Boolean = false
+
 )
 
 
@@ -102,29 +104,29 @@ class CompletePurchaseOrderViewModel : ViewModel() {
         }
     }
 
-    fun loadSelectedProducts(selectedProductIds: List<Int>) {
+    fun loadSelectedProducts(pre: List<NavSelectedProduct>) {
         viewModelScope.launch {
-            val products = selectedProductIds.mapNotNull { productId ->
-                val response = RetrofitClient.api.getProduct(productId)
-                if (response.isSuccessful) {
-                    val product = response.body()?.data
-                    product?.let {
-                        SelectedProduct(
-                            id = it.id,
-                            name = it.name,
-                            description = it.description,
-                            imageUrl = it.imageUrl,
-                            unitPrice = it.unitCost,  // usa unitCost aquí
-                            quantity = 1
-                        )
-                    }
-                } else null
+            _uiState.update { it.copy(isLoading = true) }
+
+            val products = pre.mapNotNull { navItem ->
+                val response = RetrofitClient.api.getProduct(navItem.id)
+                response.body()?.data?.let { prod ->
+                    SelectedProduct(
+                        id = prod.id,
+                        name = prod.name,
+                        description = prod.description,
+                        imageUrl = prod.imageUrl,
+                        unitPrice = prod.unitCost,
+                        quantity = navItem.initialQuantity  // ¡usa la qty del NavSelectedProduct!
+                    )
+                }
             }
-            _uiState.update { it.copy(selectedProducts = products) }
+            _uiState.update {
+                it.copy(selectedProducts = products, isLoading = false)
+            }
             calculateTotal()
         }
     }
-
 
     private fun loadSuppliers() {
         viewModelScope.launch {

@@ -1,6 +1,7 @@
 package com.example.stockia.view.purchasesOrder
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,14 +29,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 import com.example.stockia.common.PurchaseOrderCard
 import com.example.stockia.common.SalesOrderCard
+import com.example.stockia.ui.theme.AzulPrincipal
 import com.example.stockia.viewmodel.purchaseOrder.PurchaseOrdersViewModel
 
 @Composable
@@ -96,7 +100,22 @@ fun PurchasesOrdersView(
                         }
                 )
             }
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(16.dp))
+
+            OutlinedButton(
+                onClick = { navController.navigate(Routes.PredictionView) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .height(60.dp)
+                    .background(Color.White),
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, AzulPrincipal)
+            ) {
+                Text("Compra con IA", color = AzulPrincipal, fontSize = 16.sp)
+            }
+
+            Spacer(Modifier.height(16.dp))
 
             // ─── Leyenda de estados ───────────────────────────────────────────────────
             Row(

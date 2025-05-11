@@ -18,6 +18,7 @@ import retrofit2.http.PartMap
 import retrofit2.http.Path
 import retrofit2.http.PATCH
 
+import retrofit2.http.Url
 
 interface ApiService {
     @POST("users/register")
@@ -178,6 +179,16 @@ interface ApiService {
     @GET("status")
     suspend fun getStatus(): Response<StatusResponse>
 
+    //IA
+    @POST    // Sin path aquí
+    suspend fun predictMultipleShortages(
+        @Url url: String,              // La url completa la pasas en tiempo de ejecución
+        @Body request: PredictRequest
+    ): Response<PredictionsResponse>
+
+
+    @GET("inventory-transactions/confirmed-sales")
+    suspend fun getConfirmedSales(): Response<ConfirmedSalesResponse>
 
 
 }

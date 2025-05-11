@@ -26,13 +26,12 @@ class CompleteSalesOrderViewModel : ViewModel() {
 
     fun loadSelectedProducts(selectedProductIds: List<Int>) {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             val products = selectedProductIds.mapNotNull { productId ->
-                // Llamamos al servicio para obtener cada producto por su ID
                 val response = RetrofitClient.api.getProduct(productId)
                 if (response.isSuccessful) {
-                    // Convertimos el Product a SelectedProduct
-                    val product = response.body()?.data
-                    product?.let {
+                    response.body()?.data?.let {
                         SelectedProduct(
                             id = it.id,
                             name = it.name,
@@ -42,16 +41,15 @@ class CompleteSalesOrderViewModel : ViewModel() {
                             quantity = 1
                         )
                     }
-                } else {
-                    null
-                }
+                } else null
             }
 
-            // Actualizamos el estado con los productos obtenidos
-            _uiState.update { it.copy(selectedProducts = products) }
+            // 2️⃣ Actualiza lista y total, desactiva carga
+            _uiState.update { it.copy(selectedProducts = products, isLoading = false) }
             calculateTotal()
         }
     }
+
 
     fun onClientSelected(name: String) {
         val client = _uiState.value.clients.find { it.name == name }
@@ -166,7 +164,8 @@ data class CompleteSalesOrderUiState(
     val selectedStatus: StatusType? = null,
     val description: String = "",
     val selectedProducts: List<SelectedProduct> = emptyList(),
-    val totalAmount: Double = 0.0
+    val totalAmount: Double = 0.0,
+    val isLoading: Boolean = false
 )
 
 
