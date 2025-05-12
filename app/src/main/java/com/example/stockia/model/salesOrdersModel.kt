@@ -79,3 +79,9 @@ data class DeleteSalesOrderResponse(
     val status: String,
     val message: String?
 )
+
+data class BaseResponse(
+    val status: String,
+    val message: String
+)
+

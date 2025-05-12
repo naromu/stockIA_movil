@@ -8,6 +8,8 @@ import com.example.stockia.model.SalesOrder
 import com.example.stockia.model.SalesOrderItemRequest
 import com.example.stockia.model.SalesOrdersListResponse
 import kotlinx.coroutines.launch
+import android.util.Log
+
 
 class SalesOrdersViewModel : ViewModel() {
 
@@ -37,6 +39,11 @@ class SalesOrdersViewModel : ViewModel() {
     fun clearResultMessage() {
         resultMessage = null
     }
+
+    fun updateResultMessage(message: String?) {
+        resultMessage = message
+    }
+
 
     fun loadSalesOrders() {
         viewModelScope.launch {
@@ -93,12 +100,15 @@ class SalesOrdersViewModel : ViewModel() {
                 if (updateResponse.isSuccessful) {
                     resultMessage = "Orden confirmada correctamente"
                     loadSalesOrders() // Recarga lista
+                    Log.d("SalesOrdersViewModel", "Mensaje confirmado: $resultMessage")
                 } else {
                     resultMessage = "Error al confirmar la orden"
+                    Log.d("SalesOrdersViewModel", "Mensaje de error: $resultMessage")
                 }
 
             } catch (e: Exception) {
                 resultMessage = "Excepción: ${e.localizedMessage}"
+                Log.d("SalesOrdersViewModel", "Excepción capturada: $resultMessage")
             }
         }
     }

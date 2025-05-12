@@ -27,6 +27,12 @@ import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.viewmodel.salesOrder.CompleteSalesOrderViewModel
 import com.example.stockia.ui.theme.BlancoBase
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import com.example.stockia.ui.theme.AzulPrincipal
+import com.example.stockia.ui.theme.AppTypography
+import com.example.stockia.ui.theme.BlancoBase
+
 
 @Composable
 fun CompleteSalesOrderView(
@@ -55,6 +61,35 @@ fun CompleteSalesOrderView(
             .systemBarsPadding()
             .background(BlancoBase)
     ) {
+        uiState.outOfStockProduct?.let { product ->
+            AlertDialog(
+                onDismissRequest = { viewModel.clearOutOfStockProduct() },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.clearOutOfStockProduct() }) {
+                        Text(
+                            "Aceptar",
+                            color = AzulPrincipal  // Cambia al color de acento principal
+                        )
+                    }
+                },
+                title = {
+                    Text(
+                        text = "Stock insuficiente",
+                        color = AzulPrincipal, // Color del título
+                        style = AppTypography.titleMedium // Usa tu estilo de título
+                    )
+                },
+                text = {
+                    Text(
+                        "${product.name} tiene solo ${product.quantity.toDoubleOrNull()?.toInt() ?: 0} productos en stock.",
+                        style = AppTypography.bodyLarge,
+                        color = Color.Black // o Subtitulos si prefieres gris oscuro
+                    )
+                },
+                containerColor = BlancoBase // fondo claro como el resto de la app
+            )
+
+        }
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Top,
@@ -141,7 +176,9 @@ fun CompleteSalesOrderView(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            val isFormValid = uiState.selectedClient != null && uiState.selectedStatus != null
+            val isFormValid = uiState.selectedClient != null &&
+                    uiState.selectedStatus != null &&
+                    uiState.outOfStockProduct == null
             CustomButtonBlue(
                 text = "Generar compra",
                 onClick = { viewModel.submitSalesOrder(navController) },

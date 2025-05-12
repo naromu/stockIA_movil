@@ -1,5 +1,6 @@
 package com.example.stockia.view.salesOrder
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,6 +41,7 @@ import com.example.stockia.common.SalesOrderCard
 @Composable
 fun SalesOrdersView(
     navController: NavController,
+    initialMessage: String?,
     viewModel: SalesOrdersViewModel = viewModel()
 
 
@@ -48,17 +50,37 @@ fun SalesOrdersView(
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
     var selectedOrderId by remember { mutableStateOf<Int?>(null) }
+    val message = viewModel.resultMessage
 
-    LaunchedEffect(viewModel.resultMessage) {
-        viewModel.resultMessage?.let { msg ->
-            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    LaunchedEffect(initialMessage) {
+        initialMessage?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    LaunchedEffect(message) {
+        Log.d("SalesOrdersView", "Valor observado: $message")
+        message?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            Log.d("SalesOrdersView", "Toast mostrado: $it")
+            println("Toast mostrado: $it")
             viewModel.clearResultMessage()
         }
     }
 
+
     LaunchedEffect(Unit) {
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<String>("resultMessage")
+            ?.let { message ->
+                viewModel.updateResultMessage(message)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<String>("resultMessage")
+            }
+
         viewModel.loadSalesOrders()
     }
+
 
     Box(
         modifier = Modifier

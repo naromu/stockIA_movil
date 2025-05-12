@@ -11,6 +11,10 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.gson.Gson
+import com.example.stockia.model.BaseResponse
+import com.example.stockia.model.Product
+import kotlin.math.max
 
 
 class CompleteSalesOrderViewModel : ViewModel() {
@@ -22,6 +26,15 @@ class CompleteSalesOrderViewModel : ViewModel() {
         loadClients()
         loadStatusOptions()
         calculateTotal()
+    }
+
+    fun clearOutOfStockProduct() {
+        _uiState.update { it.copy(outOfStockProduct = null) }
+    }
+
+    private fun extractProductIdFromMessage(message: String): Int? {
+        val regex = Regex("Producto con ID (\\d+) no tiene suficiente stock")
+        return regex.find(message)?.groupValues?.get(1)?.toIntOrNull()
     }
 
     fun loadSelectedProducts(selectedProductIds: List<Int>) {
@@ -50,6 +63,22 @@ class CompleteSalesOrderViewModel : ViewModel() {
         }
     }
 
+    private fun fetchOutOfStockProduct(productId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.api.getProduct(productId)
+                if (response.isSuccessful) {
+                    val product = response.body()?.data
+                    _uiState.update { it.copy(outOfStockProduct = product) }
+                } else {
+                    Log.e("StockVM", "Error cargando producto: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("StockVM", "Excepción al cargar producto", e)
+            }
+        }
+    }
+
 
     fun onClientSelected(name: String) {
         val client = _uiState.value.clients.find { it.name == name }
@@ -70,17 +99,38 @@ class CompleteSalesOrderViewModel : ViewModel() {
             val updatedProducts = currentState.selectedProducts.map {
                 if (it.id == productId) it.copy(quantity = it.quantity + 1) else it
             }
-            currentState.copy(selectedProducts = updatedProducts)
+
+            val updatedProduct = updatedProducts.find { it.id == productId }
+            val outOfStock = currentState.outOfStockProduct
+
+            val shouldClearOutOfStock = (outOfStock?.id == productId) &&
+                    ((outOfStock.quantity.toDoubleOrNull()?.toInt() ?: 0) >= (updatedProduct?.quantity ?: 0))
+
+            currentState.copy(
+                selectedProducts = updatedProducts,
+                outOfStockProduct = if (shouldClearOutOfStock) null else currentState.outOfStockProduct
+            )
         }
         calculateTotal()
     }
+
 
     fun decreaseQuantity(productId: Int) {
         _uiState.update { currentState ->
             val updatedProducts = currentState.selectedProducts.map {
                 if (it.id == productId && it.quantity > 1) it.copy(quantity = it.quantity - 1) else it
             }
-            currentState.copy(selectedProducts = updatedProducts)
+
+            val updatedProduct = updatedProducts.find { it.id == productId }
+            val outOfStock = currentState.outOfStockProduct
+
+            val shouldClearOutOfStock = (outOfStock?.id == productId) &&
+                    ((outOfStock.quantity.toDoubleOrNull()?.toInt() ?: 0) >= (updatedProduct?.quantity ?: 0))
+
+            currentState.copy(
+                selectedProducts = updatedProducts,
+                outOfStockProduct = if (shouldClearOutOfStock) null else currentState.outOfStockProduct
+            )
         }
         calculateTotal()
     }
@@ -109,11 +159,24 @@ class CompleteSalesOrderViewModel : ViewModel() {
             try {
                 val response = RetrofitClient.api.createSalesOrder(request)
                 if (response.isSuccessful) {
-                    navController.navigate("SalesOrdersView") {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("resultMessage", "Orden creada con éxito")
+
+                    navController.navigate("SalesOrdersView?message=Orden creada exitosamente") {
                         popUpTo("CompleteSalesOrderView") { inclusive = true }
                     }
-                } else {
-                    println("Error creando orden: ${response.code()}")
+                }
+else {
+                    val errorJson = response.errorBody()?.string()
+                    val error = Gson().fromJson(errorJson, BaseResponse::class.java)
+                    val errorMessage = error?.message ?: "Error desconocido"
+                    Log.e("SubmitSalesOrder", "Error: $errorMessage")
+
+                    val productId = extractProductIdFromMessage(errorMessage)
+                    if (productId != null) {
+                        fetchOutOfStockProduct(productId)
+                    }
                 }
             } catch (e: Exception) {
                 println("Excepción al crear orden: ${e.message}")
@@ -157,6 +220,8 @@ class CompleteSalesOrderViewModel : ViewModel() {
 
 // UI STATE
 
+val outOfStockProduct: Product? = null
+
 data class CompleteSalesOrderUiState(
     val clients: List<Client> = emptyList(),
     val selectedClient: Client? = null,
@@ -165,7 +230,8 @@ data class CompleteSalesOrderUiState(
     val description: String = "",
     val selectedProducts: List<SelectedProduct> = emptyList(),
     val totalAmount: Double = 0.0,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val outOfStockProduct: Product? = null
 )
 
 

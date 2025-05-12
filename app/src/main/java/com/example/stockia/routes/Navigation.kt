@@ -213,10 +213,21 @@ fun AppNavHost(context: Context) {
 
 
         //SALES ORDERS
-        composable(Routes.SalesOrdersView) {
-            SalesOrdersView(navController)
-            BackHandler { }
+//        composable(Routes.SalesOrdersView) {
+//            SalesOrdersView(navController)
+//            BackHandler { }
+//        }
+
+        composable(
+            route = "${Routes.SalesOrdersView}?message={message}",
+            arguments = listOf(
+                navArgument("message") { nullable = true }
+            )
+        ) { backStackEntry ->
+            val message = backStackEntry.arguments?.getString("message")
+            SalesOrdersView(navController = navController, initialMessage = message)
         }
+
 
         composable(Routes.NewSalesOrderView){
             NewSalesOrderView(navController)
