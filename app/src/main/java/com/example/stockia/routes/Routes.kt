@@ -43,6 +43,17 @@ object Routes {
     const val  NewPurchaseOrderView = "NewPurchaseOrderView"
     const val  CompletePurchasesOrderViewWithArgs = "CompletePurchasesOrderViewWithArgs"
 
+    //Sales return - devoluciones de vent
+    const val SalesReturnsView = "SalesReturnsView"
+    const val NewSalesReturnView = "newSalesReturn"
+    const val SalesReturnDetailView = "SalesReturnDetailView"
+    const val CompleteNewSalesReturnView = "CompleteNewSalesReturnView"
+    const val FinalizeSalesReturnView = "finalizeSalesReturn"
+
+
+
+
+
 
     //IA
     const val  PredictionView = "PredictionView"

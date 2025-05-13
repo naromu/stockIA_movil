@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.stockia.routes.Routes.CompleteNewSalesReturnView
 import com.example.stockia.routes.Routes.CreateProductView
 import com.example.stockia.routes.Routes.NewSalesOrderView
 import com.example.stockia.routes.Routes.ProductsView
@@ -46,9 +47,13 @@ import com.example.stockia.view.purchasesOrder.NewPurchasesOrderView
 import com.example.stockia.view.purchasesOrder.PredictionView
 import com.example.stockia.view.purchasesOrder.PurchasesOrdersView
 import com.example.stockia.view.salesOrder.CompleteSalesOrderView
+import com.example.stockia.view.salesReturn.SalesReturnDetailView
 import com.example.stockia.view.stock.StockListView
 import com.example.stockia.view.stock.EditStockView
-
+import com.example.stockia.view.salesReturn.SalesReturnsView
+import com.example.stockia.view.salesReturn.CompleteNewSalesReturnView
+import com.example.stockia.view.salesReturn.NewSalesReturnViewStep1
+import com.example.stockia.view.salesReturn.FinalizeSalesReturnView
 
 @Composable
 fun AppNavHost(context: Context) {
@@ -213,11 +218,6 @@ fun AppNavHost(context: Context) {
 
 
         //SALES ORDERS
-//        composable(Routes.SalesOrdersView) {
-//            SalesOrdersView(navController)
-//            BackHandler { }
-//        }
-
         composable(
             route = "${Routes.SalesOrdersView}?message={message}",
             arguments = listOf(
@@ -296,6 +296,48 @@ fun AppNavHost(context: Context) {
             BackHandler { }
 
         }
+
+        //sales return
+        composable(Routes.SalesReturnsView) {
+            SalesReturnsView(navController = navController)
+        }
+
+        composable(Routes.NewSalesReturnView) {
+            NewSalesReturnViewStep1(navController)
+        }
+
+        composable(
+            route = "${Routes.SalesReturnDetailView}/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id") ?: return@composable
+            SalesReturnDetailView(navController = navController, returnId = id)
+        }
+
+        composable(
+            route = "${Routes.CompleteNewSalesReturnView}/{orderId}",
+            arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getInt("orderId") ?: return@composable
+            CompleteNewSalesReturnView(navController = navController, orderId = orderId)
+        }
+
+        composable(
+            route = "${Routes.FinalizeSalesReturnView}?selectedProducts={selectedProducts}&orderId={orderId}",
+            arguments = listOf(
+                navArgument("selectedProducts") { defaultValue = "" },
+                navArgument("orderId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val selectedProducts = backStackEntry.arguments?.getString("selectedProducts") ?: ""
+            val orderId = backStackEntry.arguments?.getInt("orderId") ?: return@composable
+            FinalizeSalesReturnView(navController, selectedProducts, orderId)
+        }
+
+
+
+
+
 
         //IA
 

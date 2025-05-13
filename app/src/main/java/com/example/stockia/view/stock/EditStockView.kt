@@ -82,7 +82,7 @@ fun EditStockView(
             Spacer(modifier = Modifier.height(8.dp))
 
             CustomTextField(
-                value = viewModel.newStock.toString(),
+                value = viewModel.stockInput,
                 onValueChange = viewModel::onStockChange,
                 label = "Cantidad",
                 modifier = Modifier.fillMaxWidth(),

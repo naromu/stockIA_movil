@@ -170,6 +170,27 @@ interface ApiService {
         @Body stockUpdateRequest: UpdateStockRequest
     ): Response<UpdateStockResponse>
 
+    //Sales-Return
+    // Devoluciones de venta
+    @GET("sales-returns")
+    suspend fun getSalesReturns(): Response<SalesReturnsResponse>
+
+    @GET("sales-returns/{id}")
+    suspend fun getSalesReturnById(@Path("id") id: Int): Response<GetSalesReturnResponse>
+
+    @POST("sales-returns")
+    suspend fun createSalesReturn(@Body request: CreateSalesReturnRequest): Response<CreateSalesReturnResponse>
+
+    @PUT("sales-returns/{id}")
+    suspend fun updateSalesReturn(
+        @Path("id") id: Int,
+        @Body request: UpdateSalesReturnRequest
+    ): Response<UpdateSalesReturnResponse>
+
+    @DELETE("sales-returns/{id}")
+    suspend fun deleteSalesReturn(@Path("id") id: Int): Response<DeleteSalesReturnResponse>
+
+
 
     //measurement
     @GET("measurements")

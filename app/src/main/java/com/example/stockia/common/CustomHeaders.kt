@@ -185,8 +185,7 @@ fun SideMenu(
             }
 
             MenuItem("Stock", icon = Icons.Default.Star, selected = currentRoute == "stock") {
-               // onRouteClick("stock")
-                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+                onRouteClick(Routes.StockListView)
 
             }
         }
@@ -202,8 +201,8 @@ fun SideMenu(
 
             }
             MenuItem("Devoluciones", icon = Icons.Default.Star, selected = currentRoute == "devoluciones_de_venta") {
-               // onRouteClick("devoluciones_de_venta")
-                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+                onRouteClick(Routes.SalesReturnsView)
+
 
             }
         }

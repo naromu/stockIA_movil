@@ -13,6 +13,9 @@ import kotlinx.coroutines.launch
 
 class EditStockViewModel : ViewModel() {
 
+    var stockInput by mutableStateOf("")
+        private set
+
     var newStock by mutableStateOf(0)
         private set
 
@@ -32,13 +35,16 @@ class EditStockViewModel : ViewModel() {
         get() = newStock != originalStock && newStock >= 0
 
     fun onStockChange(value: String) {
+        stockInput = value
         newStock = value.toIntOrNull() ?: 0
     }
 
     fun setInitialStock(id: Int, stock: Int) {
         originalStock = stock
         newStock = stock
+        stockInput = stock.toString()
     }
+
 
     fun clearResultMessage() {
         resultMessage = null
