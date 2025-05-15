@@ -83,7 +83,7 @@ class PredictionViewModel : ViewModel() {
                 }
 
                 // 3) predict
-                val predictUrl = "https://c4c6-181-235-140-249.ngrok-free.app/predict-multiple-shortages"
+                val predictUrl = "http://173.212.224.226:8080/predict-multiple-shortages"
                 Log.d(TAG, "3) Preparando PredictRequest con ${filtered.size} elementos")
                 val reqBody = PredictRequest(
                     status = "",
