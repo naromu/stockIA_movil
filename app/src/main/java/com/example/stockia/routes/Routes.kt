@@ -50,6 +50,15 @@ object Routes {
     const val CompleteNewSalesReturnView = "CompleteNewSalesReturnView"
     const val FinalizeSalesReturnView = "finalizeSalesReturn"
 
+    //Purchase Return
+    const val PurchaseReturnsView = "purchaseReturns"
+    const val NewPurchaseReturnStep1 = "newPurchaseReturnStep1"
+    const val CompleteNewPurchaseReturnView = "completeNewPurchaseReturn"
+    const val FinalizePurchaseReturnView = "finalizePurchaseReturn"
+
+
+
+
 
 
 

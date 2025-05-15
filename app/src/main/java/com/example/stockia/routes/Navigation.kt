@@ -42,6 +42,7 @@ import com.example.stockia.view.products.CreateProductView
 import com.example.stockia.view.products.CreateProductViewPreview
 import com.example.stockia.view.products.EditProductView
 import com.example.stockia.view.products.ProductsView
+import com.example.stockia.view.purchaseReturn.PurchaseReturnsView
 import com.example.stockia.view.purchasesOrder.CompletePurchaseOrderView
 import com.example.stockia.view.purchasesOrder.NewPurchasesOrderView
 import com.example.stockia.view.purchasesOrder.PredictionView
@@ -54,6 +55,11 @@ import com.example.stockia.view.salesReturn.SalesReturnsView
 import com.example.stockia.view.salesReturn.CompleteNewSalesReturnView
 import com.example.stockia.view.salesReturn.NewSalesReturnViewStep1
 import com.example.stockia.view.salesReturn.FinalizeSalesReturnView
+import com.example.stockia.view.purchaseReturn.PurchaseReturnsView
+import com.example.stockia.view.purchaseReturn.NewPurchaseReturnViewStep1
+import com.example.stockia.view.purchaseReturn.CompleteNewPurchaseReturnView
+import com.example.stockia.view.purchaseReturn.FinalizePurchaseReturnView
+
 
 @Composable
 fun AppNavHost(context: Context) {
@@ -333,6 +339,39 @@ fun AppNavHost(context: Context) {
             val orderId = backStackEntry.arguments?.getInt("orderId") ?: return@composable
             FinalizeSalesReturnView(navController, selectedProducts, orderId)
         }
+
+        //purchase return
+        composable(Routes.PurchaseReturnsView) {
+            PurchaseReturnsView(navController = navController)
+        }
+
+        composable(Routes.NewPurchaseReturnStep1) {
+            NewPurchaseReturnViewStep1(navController = navController)
+        }
+
+        composable(
+            route = "${Routes.CompleteNewPurchaseReturnView}/{orderId}",
+            arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getInt("orderId") ?: return@composable
+            CompleteNewPurchaseReturnView(navController = navController, orderId = orderId)
+        }
+
+        composable(
+            route = "${Routes.FinalizePurchaseReturnView}?selectedProducts={selectedProducts}&orderId={orderId}",
+            arguments = listOf(
+                navArgument("selectedProducts") { defaultValue = "" },
+                navArgument("orderId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val selectedProducts = backStackEntry.arguments?.getString("selectedProducts") ?: ""
+            val orderId = backStackEntry.arguments?.getInt("orderId") ?: return@composable
+            FinalizePurchaseReturnView(navController, selectedProducts, orderId)
+        }
+
+
+
+
 
 
 

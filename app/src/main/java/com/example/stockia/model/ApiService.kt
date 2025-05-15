@@ -190,6 +190,31 @@ interface ApiService {
     @DELETE("sales-returns/{id}")
     suspend fun deleteSalesReturn(@Path("id") id: Int): Response<DeleteSalesReturnResponse>
 
+    //Purchase Return- Devoluciones de Compras
+    @POST("purchase-returns")
+    suspend fun createPurchaseReturn(
+        @Body request: CreatePurchaseReturnRequest
+    ): Response<CreatePurchaseReturnResponse>
+
+    @GET("purchase-returns")
+    suspend fun getPurchaseReturns(): Response<PurchaseReturnsListResponse>
+
+    @GET("purchase-returns/{id}")
+    suspend fun getPurchaseReturnById(
+        @Path("id") id: Int
+    ): Response<PurchaseReturnDetailResponse>
+
+    @PUT("purchase-returns/{id}")
+    suspend fun updatePurchaseReturn(
+        @Path("id") id: Int,
+        @Body request: UpdatePurchaseReturnRequest
+    ): Response<CreatePurchaseReturnResponse>
+
+    @DELETE("purchase-returns/{id}")
+    suspend fun deletePurchaseReturn(
+        @Path("id") id: Int
+    ): Response<DeletePurchaseReturnResponse>
+
 
 
     //measurement

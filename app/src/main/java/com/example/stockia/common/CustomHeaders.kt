@@ -218,8 +218,8 @@ fun SideMenu(
 
             }
             MenuItem("Devoluciones compra", icon = Icons.Default.Star, selected = currentRoute == "devoluciones_de_compra") {
-                //onRouteClick("devoluciones_de_compra")
-                Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
+                onRouteClick(Routes.PurchaseReturnsView)
+
 
             }
         }
@@ -240,15 +240,6 @@ fun SideMenu(
             selected = currentRoute == "proveedores"
         ) {
             onRouteClick(Routes.ProvidersView)
-        }
-        MenuHeaderItem(
-            title    = "Estadísticas",
-            icon     = Icons.Default.Star,
-            selected = currentRoute == "estadisticas"
-        ) {
-            //onRouteClick("estadisticas")
-            Toast.makeText(context, "En desarrollo 🚧", Toast.LENGTH_SHORT).show()
-
         }
 
 
