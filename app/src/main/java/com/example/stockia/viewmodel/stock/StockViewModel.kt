@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class StockViewModel : ViewModel() {
 
@@ -49,7 +50,10 @@ class StockViewModel : ViewModel() {
                 } else {
                     println("Error al cargar productos: ${response.code()}")
                 }
-            } catch (e: Exception) {
+            }catch (e: IOException) {
+                println("Error de red")
+            }
+            catch (e: Exception) {
                 println("Excepción al cargar productos: ${e.message}")
             }
         }

@@ -10,6 +10,9 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class PredictionViewModel : ViewModel() {
 
@@ -110,9 +113,16 @@ class PredictionViewModel : ViewModel() {
                 Log.d(TAG, "✅ fetchPredictions() completado sin errores")
 
             } catch (e: Exception) {
+                val connectionErrorMessage = when (e) {
+                    is UnknownHostException,
+                    is SocketTimeoutException,
+                    is IOException -> "No se pudo conectar al servidor. Verifica tu conexión a Internet."
+                    else -> e.message ?: "Ocurrió un error desconocido"
+                }
                 Log.d(TAG, "💥 Excepción en fetchPredictions: ${e.message}", e)
-                _error.value = e.message
-            } finally {
+                _error.value = connectionErrorMessage
+
+        } finally {
                 _isLoading.value = false
                 Log.d(TAG, "🔄 fetchPredictions() terminó (isLoading=false)")
             }

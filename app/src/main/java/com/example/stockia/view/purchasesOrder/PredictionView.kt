@@ -71,7 +71,7 @@ fun PredictionView(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Error al cargar predicciones ${error}", color = MaterialTheme.colorScheme.error)
+                    Text("Error al cargar predicciones: ${error}", color = MaterialTheme.colorScheme.error)
                 }
                 else -> {
                     // Mostrar solo los con shortageDate != null

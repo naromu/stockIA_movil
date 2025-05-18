@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.RegisterRequest
 import com.example.stockia.model.RegisterResponse
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class RegisterViewModel : ViewModel() {
 
@@ -171,7 +172,10 @@ class RegisterViewModel : ViewModel() {
                     registrationResult = body.message ?: "Ocurrió un error"
                 }
 
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                registrationResult = "Error de red"
+            }
+            catch (e: Exception) {
                 Log.d("RegisterViewModel", "Exception: ${e.message}")
                 registrationResult = e.message ?: "Error desconocido"
             }

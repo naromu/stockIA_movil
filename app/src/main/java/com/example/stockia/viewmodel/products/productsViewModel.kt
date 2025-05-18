@@ -12,6 +12,7 @@ import com.example.stockia.model.ProductsResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import java.io.IOException
 
 class ProductsViewModel : ViewModel() {
 
@@ -82,7 +83,10 @@ class ProductsViewModel : ViewModel() {
                     Log.e("NewCategoryVM", "HTTP ${response.code()} - ${response.errorBody()?.string()}")
 
                 }
-            } catch (e: Exception) {
+            }  catch (e: IOException) {
+                resultMessage = "Error de red"
+            }
+            catch (e: Exception) {
                 resultMessage = e.localizedMessage ?: "Error desconocido"
             }
             isLoading = false

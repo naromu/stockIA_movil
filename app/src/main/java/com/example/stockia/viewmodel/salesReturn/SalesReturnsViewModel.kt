@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.SalesReturn
 import com.example.stockia.model.SalesReturnsResponse
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class SalesReturnsViewModel : ViewModel() {
 
@@ -46,7 +47,10 @@ class SalesReturnsViewModel : ViewModel() {
                 } else {
                     resultMessage = "Error ${response.code()}"
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                resultMessage = "Error de red"
+            }
+            catch (e: Exception) {
                 resultMessage = "Error: ${e.localizedMessage}"
             }
             isLoading = false

@@ -12,6 +12,7 @@ import com.example.stockia.model.LoginResponse
 import com.example.stockia.utils.SharedPreferencesHelper
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     var email by mutableStateOf("")
@@ -88,7 +89,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     loginResult = error?.message ?: "Error desconocido"
                 }
 
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                loginResult = "Error de red"
+            }
+            catch (e: Exception) {
                 Log.d("LoginViewModel", "Error: ${e.message}")
                 loginResult = e.message ?: "Error inesperado"
             } finally {

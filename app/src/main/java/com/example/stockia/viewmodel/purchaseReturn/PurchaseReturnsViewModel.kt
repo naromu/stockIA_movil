@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.PurchaseReturn
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class PurchaseReturnsViewModel : ViewModel() {
 
@@ -39,7 +40,10 @@ class PurchaseReturnsViewModel : ViewModel() {
                 } else {
                     resultMessage = "Error ${response.code()} al obtener devoluciones"
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                resultMessage = "Error de red"
+            }
+            catch (e: Exception) {
                 resultMessage = e.localizedMessage ?: "Error de red"
             }
         }

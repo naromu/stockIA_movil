@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.Provider
 import com.example.stockia.model.ProvidersResponse
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class ProviderViewModel : ViewModel() {
 
@@ -64,7 +65,10 @@ class ProviderViewModel : ViewModel() {
                 } else {
                     resultMessage = "Error ${response.code()}"
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                resultMessage = "Error de red"
+            }
+            catch (e: Exception) {
                 resultMessage = e.localizedMessage ?: "Fallo al cargar proveedores"
             }
             isLoading = false

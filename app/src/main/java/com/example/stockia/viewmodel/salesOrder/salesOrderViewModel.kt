@@ -9,6 +9,7 @@ import com.example.stockia.model.SalesOrderItemRequest
 import com.example.stockia.model.SalesOrdersListResponse
 import kotlinx.coroutines.launch
 import android.util.Log
+import java.io.IOException
 
 
 class SalesOrdersViewModel : ViewModel() {
@@ -61,6 +62,8 @@ class SalesOrdersViewModel : ViewModel() {
                 } else {
                     resultMessage = "Error ${response.code()} al obtener órdenes"
                 }
+            } catch (e: IOException) {
+                resultMessage = "Error de red"
             } catch (e: Exception) {
                 resultMessage = e.localizedMessage ?: "Error desconocido"
             }

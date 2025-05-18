@@ -83,7 +83,7 @@ class CategoriesViewModel : ViewModel() {
                 resultMessage = "El servidor tardó demasiado en responder. Intenta de nuevo."
                 Log.d("CreateProductVM", "Timeout", e)
             } catch (e: IOException) {
-                resultMessage = "Error de red: ${e.localizedMessage}"
+                resultMessage = "Error de red"
                 Log.d("CreateProductVM", "IO error", e)
             } catch (e: Exception) {
                 resultMessage = "Error inesperado: ${e.localizedMessage}"

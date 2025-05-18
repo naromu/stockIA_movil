@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class UserProfileViewModel : ViewModel() {
 
@@ -42,7 +43,10 @@ class UserProfileViewModel : ViewModel() {
                 } else {
                     resultMessage = "Error al obtener perfil: ${response.code()}"
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                resultMessage = "Error de red"
+            }
+            catch (e: Exception) {
                 resultMessage = "Error de red"
             }
             isLoading = false

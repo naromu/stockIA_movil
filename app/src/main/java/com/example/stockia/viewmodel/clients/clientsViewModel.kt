@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.Client
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 
 class ClientViewModel : ViewModel() {
@@ -69,7 +70,10 @@ class ClientViewModel : ViewModel() {
                 } else {
                     resultMessage = "Error ${response.code()} al obtener clientes"
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                resultMessage = "Error de red"
+            }
+            catch (e: Exception) {
                 resultMessage = e.localizedMessage ?: "Error desconocido al cargar clientes"
             }
             isLoading = false
