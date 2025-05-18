@@ -7,6 +7,7 @@ import com.example.stockia.model.Client
 import com.example.stockia.model.GetClientResponse
 import com.example.stockia.model.UpdateClientRequest
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class EditClientViewModel : ViewModel() {
 
@@ -85,7 +86,13 @@ class EditClientViewModel : ViewModel() {
                     resultMessage = "Cliente eliminado"
                     onSuccess()
                 } else {
-                    resultMessage = "Error ${response.code()} al eliminar"
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = try {
+                        JSONObject(errorBody).getString("message")
+                    } catch (e: Exception) {
+                        "Error ${response.code()} al eliminar"
+                    }
+                    resultMessage = errorMessage
                 }
             } catch (e: Exception) {
                 resultMessage = e.localizedMessage ?: "Error desconocido"

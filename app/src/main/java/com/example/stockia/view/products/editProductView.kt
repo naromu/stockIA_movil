@@ -432,7 +432,7 @@ fun EditProductView(
             TextButton(onClick = {
                 viewModel.onDeleteClick { navController.popBackStack() }
             }) {
-                Text("Eliminar categoría", color = AzulPrincipal, fontSize = 16.sp,)
+                Text("Eliminar producto", color = AzulPrincipal, fontSize = 16.sp,)
             }
         }
     }

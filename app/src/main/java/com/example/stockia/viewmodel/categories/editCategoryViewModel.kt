@@ -27,6 +27,8 @@ class EditCategoryViewModel : ViewModel() {
     var nameError by mutableStateOf<String?>(null)
         private set
 
+    var wasEditing by mutableStateOf(false)
+
     var resultMessage by mutableStateOf<String?>(null)
         private set
 
@@ -84,6 +86,7 @@ class EditCategoryViewModel : ViewModel() {
                 val resp = RetrofitClient.api.updateCategory(id, req)
                 if (resp.isSuccessful) {
                     resultMessage = "success"
+                    wasEditing = true
                 } else {
                     val errJson = resp.errorBody()?.string()
                     val err = Gson().fromJson(errJson, UpdateCategoryResponse::class.java)
