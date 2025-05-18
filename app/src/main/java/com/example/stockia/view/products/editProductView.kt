@@ -59,6 +59,7 @@ import java.io.ByteArrayOutputStream
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import com.example.stockia.common.ErrorMessageBox
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -107,9 +108,6 @@ fun EditProductView(
             if (msg == "success") {
                 Toast.makeText(context, "Producto actualizado", Toast.LENGTH_LONG).show()
                 navController.popBackStack()
-            } else {
-                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-                viewModel.clearResult()
             }
         }
     }
@@ -420,6 +418,17 @@ fun EditProductView(
             }
 
             Spacer(Modifier.height(32.dp))
+
+            viewModel.resultMessage?.takeIf {
+                it != "success"
+            }?.let { message ->
+                ErrorMessageBox(
+                    message = message,
+                    onClose = { viewModel.clearResult() }
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
 
             CustomButtonBlue(
                 text = if (!viewModel.isLoading) "Actualizar" else "Actualizando...",

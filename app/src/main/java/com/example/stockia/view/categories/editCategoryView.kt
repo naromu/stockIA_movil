@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import com.example.stockia.common.CommonError
 import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.common.CustomTextField
+import com.example.stockia.common.ErrorMessageBox
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.routes.Routes
 import com.example.stockia.ui.theme.AppTypography
@@ -60,10 +61,6 @@ fun EditCategoryView(
 
             null -> Unit
 
-            else -> {
-                Toast.makeText(context, viewModel.resultMessage, Toast.LENGTH_LONG).show()
-                viewModel.clearResultMessage()
-            }
         }
     }
 
@@ -105,6 +102,16 @@ fun EditCategoryView(
             CommonError(text = it)
         }
         Spacer(Modifier.height(32.dp))
+
+        viewModel.resultMessage?.takeIf {
+            it != "success"
+        }?.let { message ->
+            ErrorMessageBox(
+                message = message,
+                onClose = { viewModel.clearResultMessage() }
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
 
         CustomButtonBlue(
             text = if (!viewModel.isLoading) "Guardar" else "Guardando",

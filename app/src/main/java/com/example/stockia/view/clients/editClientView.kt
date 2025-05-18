@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.common.CustomPhoneTextField
 import com.example.stockia.common.CustomTextField
+import com.example.stockia.common.ErrorMessageBox
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.ui.theme.AppTypography
 import com.example.stockia.ui.theme.AzulPrincipal
@@ -58,10 +59,7 @@ fun EditClientView(
             }
 
             null -> Unit
-            else -> {
-                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-                viewModel.clearResultMessage()
-            }
+
         }
     }
 
@@ -126,6 +124,17 @@ fun EditClientView(
             )
 
             Spacer(modifier = Modifier.height(32.dp))
+
+            viewModel.resultMessage?.takeIf {
+                it != "Cliente actualizado" && it != "Cliente eliminado"
+            }?.let { message ->
+                ErrorMessageBox(
+                    message = message,
+                    onClose = { viewModel.clearResultMessage() }
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
 
             // --- Botón: Actualizar ---
             CustomButtonBlue(

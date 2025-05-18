@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stockia.model.UpdateProviderRequest
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class EditProviderViewModel : ViewModel() {
 
@@ -76,7 +77,13 @@ class EditProviderViewModel : ViewModel() {
                     resultMessage = "Proveedor eliminado"
                     onSuccess()
                 } else {
-                    resultMessage = response.body()?.message ?: "Error al eliminar proveedor"
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = try {
+                        JSONObject(errorBody).getString("message")
+                    } catch (e: Exception) {
+                        "Error ${response.code()} al eliminar"
+                    }
+                    resultMessage = errorMessage
                 }
             } catch (e: Exception) {
                 resultMessage = e.localizedMessage ?: "Error inesperado"

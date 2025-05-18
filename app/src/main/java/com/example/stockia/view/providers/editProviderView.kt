@@ -2,12 +2,14 @@ package com.example.stockia.view.providers
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
@@ -18,6 +20,7 @@ import androidx.navigation.NavController
 import com.example.stockia.common.CustomButtonBlue
 import com.example.stockia.common.CustomPhoneTextField
 import com.example.stockia.common.CustomTextField
+import com.example.stockia.common.ErrorMessageBox
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.routes.Routes
 import com.example.stockia.ui.theme.AppTypography
@@ -63,8 +66,7 @@ fun EditProviderView(
 
             null -> Unit
             else -> {
-                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-                viewModel.clearResultMessage()
+
             }
         }
     }
@@ -126,6 +128,17 @@ fun EditProviderView(
             )
 
             Spacer(modifier = Modifier.height(32.dp))
+
+            viewModel.resultMessage?.takeIf {
+                it != "Proveedor actualizado" && it != "Proveedor eliminado"
+            }?.let { message ->
+                ErrorMessageBox(
+                    message = message,
+                    onClose = { viewModel.clearResultMessage() }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             CustomButtonBlue(
                 text = if (!viewModel.isLoading) "Actualizar" else "Actualizando...",
