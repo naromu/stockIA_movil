@@ -47,10 +47,11 @@ fun EditCategoryView(
     LaunchedEffect(viewModel.resultMessage) {
         when (viewModel.resultMessage) {
             "success" -> {
-                if (viewModel.isEditing){
+                if (viewModel.wasEditing){
                     Toast.makeText(context, "Categoria modificada exitosamente", Toast.LENGTH_LONG).show()
-
-                } else {
+                    viewModel.wasEditing = false
+                }
+                else {
                     Toast.makeText(context, "Categoria eliminada exitosamente", Toast.LENGTH_LONG).show()
                 }
                 viewModel.clearResultMessage()

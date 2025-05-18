@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.stockia.common.CustomButtonBlue
+import com.example.stockia.common.CustomPhoneTextField
 import com.example.stockia.common.CustomTextField
 import com.example.stockia.common.HeaderWithBackArrow
 import com.example.stockia.routes.Routes
@@ -109,11 +110,9 @@ fun EditProviderView(
             Spacer(modifier = Modifier.height(16.dp))
 
             Label("Número de Celular")
-            CustomTextField(
+            CustomPhoneTextField(
                 value = viewModel.phone,
-                onValueChange = { viewModel.phone = it },
-                label = "Número de Celular",
-                modifier = Modifier.fillMaxWidth()
+                onValueChange = {viewModel.phone = it }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
