@@ -158,7 +158,13 @@ fun SideMenu(
             .background(BlancoBase)
             .padding(16.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable {
+                    onRouteClick(Routes.UserProfileView)
+                }
+                .padding(8.dp)
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = null,

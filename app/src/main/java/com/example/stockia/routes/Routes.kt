@@ -56,15 +56,10 @@ object Routes {
     const val CompleteNewPurchaseReturnView = "completeNewPurchaseReturn"
     const val FinalizePurchaseReturnView = "finalizePurchaseReturn"
 
-
-
-
-
-
-
-
-
     //IA
     const val  PredictionView = "PredictionView"
+
+    //Profile
+    const val UserProfileView = "UserProfileView"
 
 }

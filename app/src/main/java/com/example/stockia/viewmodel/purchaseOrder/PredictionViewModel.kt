@@ -66,7 +66,6 @@ class PredictionViewModel : ViewModel() {
                 val products = pBody.data
                 Log.d(TAG, " → Productos: tamaño=${products.size}")
 
-                // Guardamos mapa id->name para UI
                 _productsMap.value = products.associate { it.id to it.name }
 
                 // Filtrar solo los confirmed existentes

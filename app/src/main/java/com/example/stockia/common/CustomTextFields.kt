@@ -36,48 +36,41 @@ import com.example.stockia.ui.theme.AzulPrincipal
 import com.example.stockia.ui.theme.Gris
 import com.example.stockia.ui.theme.StockIATheme
 
-// Define el transformador de formato telefónico
-class PhoneNumberVisualTransformation : VisualTransformation {
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.VisualTransformation
+
+class DashedPhoneVisualTransformation : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
-        val formatted = phoneNumberFilter(text.text)
-        return TransformedText(
-            AnnotatedString(formatted),
-            PhoneNumberOffsetMapper
-        )
-    }
-}
-
-private fun phoneNumberFilter(text: String): String {
-    val digits = text.take(10).filter { it.isDigit() }
-    return when {
-        digits.isEmpty() -> ""
-        digits.length <= 3 -> "($digits"
-        digits.length <= 6 -> "(${digits.take(3)}) ${digits.drop(3)}"
-        else -> "(${digits.take(3)}) ${digits.drop(3).take(3)}-${digits.drop(6)}"
-    }
-}
-
-// Mapeador de posiciones para el cursor
-private val PhoneNumberOffsetMapper = object : OffsetMapping {
-    override fun originalToTransformed(offset: Int): Int {
-        return when {
-            offset <= 0 -> 0
-            offset <= 3 -> offset + 1    // Agrega "("
-            offset <= 6 -> offset + 3    // Agrega ") "
-            else -> offset + 4           // Agrega "-"
+        val trimmed = text.text.take(10)
+        val transformed = buildString {
+            for (i in trimmed.indices) {
+                append(trimmed[i])
+                if (i == 2 || i == 5) append('-')
+            }
         }
-    }
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                return when {
+                    offset <= 3 -> offset
+                    offset <= 6 -> offset + 1
+                    offset <= 10 -> offset + 2
+                    else -> 12
+                }
+            }
 
-    override fun transformedToOriginal(offset: Int): Int {
-        return when {
-            offset <= 1 -> 0
-            offset <= 5 -> maxOf(0, offset - 2)
-            offset <= 10 -> maxOf(0, offset - 4)
-            else -> maxOf(0, offset - 4)
+            override fun transformedToOriginal(offset: Int): Int {
+                return when {
+                    offset <= 3 -> offset
+                    offset <= 7 -> offset - 1
+                    offset <= 12 -> offset - 2
+                    else -> 10
+                }
+            }
         }
+        return TransformedText(AnnotatedString(transformed), offsetMapping)
     }
-
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +100,7 @@ fun CustomPhoneTextField(
 
         ),
         keyboardOptions = keyboardOptions,
-        visualTransformation = PhoneNumberVisualTransformation()
+        visualTransformation = DashedPhoneVisualTransformation()
     )
 }
 

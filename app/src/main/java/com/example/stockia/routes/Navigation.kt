@@ -42,6 +42,7 @@ import com.example.stockia.view.products.CreateProductView
 import com.example.stockia.view.products.CreateProductViewPreview
 import com.example.stockia.view.products.EditProductView
 import com.example.stockia.view.products.ProductsView
+import com.example.stockia.view.profile.UserProfileView
 import com.example.stockia.view.purchaseReturn.PurchaseReturnsView
 import com.example.stockia.view.purchasesOrder.CompletePurchaseOrderView
 import com.example.stockia.view.purchasesOrder.NewPurchasesOrderView
@@ -372,12 +373,6 @@ fun AppNavHost(context: Context) {
 
 
 
-
-
-
-
-
-
         //IA
 
         composable(Routes.PredictionView){
@@ -385,5 +380,11 @@ fun AppNavHost(context: Context) {
             BackHandler { }
         }
 
+
+        //Profile
+        composable(Routes.UserProfileView){
+            UserProfileView(navController)
+            BackHandler { }
+        }
     }
 }
