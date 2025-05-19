@@ -240,6 +240,11 @@ interface ApiService {
     @GET("users/profile")
     suspend fun getUserProfile(): Response<UserProfileResponse>
 
+    @PUT("users/profile")
+    suspend fun updateUserProfile(
+        @Body profile: UpdateProfileRequest
+    ): Response<UserProfileResponse>
+
 
 
 

@@ -127,8 +127,10 @@ fun UserProfileView(
                 text = "Guardar cambios",
                 enabled = viewModel.isModified && !viewModel.isLoading,
                 onClick = {
-                    Toast.makeText(context, "Guardar aún no implementado", Toast.LENGTH_SHORT).show()
+                    focusManager.clearFocus()
+                    viewModel.updateProfile()
                 }
+
             )
         }
     }

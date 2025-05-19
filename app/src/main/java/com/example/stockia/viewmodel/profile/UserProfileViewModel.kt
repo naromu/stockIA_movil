@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.stockia.model.UpdateProfileRequest
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -69,4 +70,34 @@ class UserProfileViewModel : ViewModel() {
     fun clearResultMessage() {
         resultMessage = null
     }
+
+    fun updateProfile() {
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                val request = UpdateProfileRequest(
+                    fullName = fullName,
+                    companyName = companyName,
+                    phone = phone
+                )
+                val response = RetrofitClient.api.updateUserProfile(request)
+                if (response.isSuccessful) {
+                    response.body()?.data?.let { updatedUser ->
+                        originalFullName = updatedUser.full_name
+                        originalCompanyName = updatedUser.company_name
+                        originalPhone = updatedUser.phone
+                        resultMessage = "Perfil actualizado exitosamente"
+                    }
+                } else {
+                    resultMessage = "Error al actualizar: ${response.code()}"
+                }
+            } catch (e: IOException) {
+                resultMessage = "Error de red"
+            } catch (e: Exception) {
+                resultMessage = "Error inesperado"
+            }
+            isLoading = false
+        }
+    }
+
 }

@@ -15,3 +15,10 @@ data class UserProfile(
     val created_at: String,
     val updated_at: String
 )
+
+data class UpdateProfileRequest(
+    val fullName: String,
+    val companyName: String,
+    val phone: String
+)
+

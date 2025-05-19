@@ -115,7 +115,7 @@ fun HomeView(
         }
 
         AnimatedVisibility(
-            visible = menuOpen,
+            visible = menuOpen && headerHeightDp > 0.dp,
             enter = slideInHorizontally(
                 initialOffsetX = { -it },
                 animationSpec = tween(durationMillis = 300)
